@@ -17,6 +17,7 @@
 	},
 	"permissions": [
 		"https://dj.life-is-tech.com/api",
+    "http://lit.sh/*",
 		"storage",
 		"tabs"
 	]
