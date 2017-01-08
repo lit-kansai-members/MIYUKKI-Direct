@@ -2,14 +2,29 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title></title>
+  <title>MIYUKKI Direct</title>
   <script src="./jquery-3.1.1.min.js"></script>
+  <link rel="stylesheet" href="./popup.css">
 </head>
 <body>
-<form action="" id="getShortenURL">
-lit.sh/<input type="text" id="inputShortenURL" tabindex="1">
-</form>
-<div id="result"></div>
+<section id="init">
+  <form action="" id="getShortenURL">
+    <p class="flex-container flex-row flex-nowrap">
+    <span>lit.sh/</span><input type="text" class="stretch" id="inputShortenURL" autofocus placeholder="URLを入力…">
+    </p>
+    <p>
+    <input id="inputRetentionPeriod" type="number" value="0" min="0" col="2">日間保存
+    </p>
+    <ul>
+      <li><small>0の場合は無期限になります。</small></li>
+      <li><small>途中でキャンセルできます。</small></li>
+    </ul>
+    <p>
+    <button id="buttonStart" class="match-parent">START</button>
+    </p>
+  </form>
+</section>
+<img id="logo" src="./djmiyukki-logo.png" alt="DJ MIYUKKI SYSTEM">
 <script src="popup.js"></script>
 </body>
 </html>
