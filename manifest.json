@@ -19,11 +19,5 @@
     "https://dj.life-is-tech.com/api",
 		"storage",
 		"tabs"
-	],
-  "content_scripts":[
-    {
-      "matches": [ "https://dj.life-is-tech.com/submit.html*"],
-      "js": ["getRoomId.js"]
-    }
-  ]
+	]
 }

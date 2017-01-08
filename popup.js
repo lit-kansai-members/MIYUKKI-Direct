@@ -1,19 +1,25 @@
-const $  = s => document.querySelector(s);
-const $$ = s => document.querySelectorAll(s);
-
-const getShortenURL = $("#getShortenURL");
-const shortenURL    = $("#inputShortenURL");
-const result        = $("#result");
-
-getShortenURL.addEventListener("submit", e =>{
-  e.preventDefault();
-  result.innerText = "plz wait...";
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if(!!sender.tab && !!request.roomId){
-      result.innerText = `got room id: ${request.roomId}`;
-      chrome.tabs.remove(sender.tab.id);
-    }
-  });
-  chrome.tabs.create({url:`http://lit.sh/${shortenURL.value}`,active:false})
-});
-
+const getRoomId = key =>
+  fetch(`http://lit.sh/${key}`, {redirect: "manual", mode: "no-cors"})
+    .then(responise =>{
+      if(responise.type === "opaqueredirect"){
+        Promise.resolve();
+      } else {
+        Promise.reject(`Requested URL ${url} is not redirectable URL.`);
+      }
+    })
+    .then(() => new Promise((resolve, reject) =>
+      chrome.tabs.create({active: false, url}, tab => resolve(tab))
+    ))
+    .then( tab => new Promise((resolve, reject) => { 
+        chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+          if (tab.id === tabId && changeInfo.url != null
+              && changeInfo.url !== url){
+            resolve({url: changeInfo.url, tabId});
+          }
+        })
+      })
+    )
+    .then(({url, tabId}) =>{
+      chrome.tabs.remove(tabId);
+      return url.match(/r=(.+)/).pop().split("&")[0];
+    })
