@@ -16,8 +16,7 @@
 		"default_popup": "popup.html"
 	},
 	"permissions": [
-		"https://dj.life-is-tech.com/api",
-    "http://lit.sh/*",
+    "https://dj.life-is-tech.com/api",
 		"storage",
 		"tabs"
 	]
