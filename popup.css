@@ -75,6 +75,12 @@ ul{
   flex-wrap: nowrap;
 }
 
+.ellipsis{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .stretch{
   flex-grow: 1;
   flex-shrink: 1;
