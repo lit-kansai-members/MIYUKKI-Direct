@@ -8,7 +8,7 @@ const $showRoomId = $("#roomId");
 const $showKeepPeriod = $("#showKeepPeriod");
 const $getShortenURL  = $("#getShortenURL");
 
-let roomId, keepPeriod;
+let roomId, keepPeriod, videoId;
 
 
 const error = e =>{
