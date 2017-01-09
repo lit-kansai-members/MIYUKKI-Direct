@@ -6,6 +6,7 @@ const $inputKeepPeriod = $("#inputKeepPeriod");
 
 const $showRoomId = $("#roomId");
 const $showKeepPeriod = $("#showKeepPeriod");
+const $getShortenURL  = $("#getShortenURL");
 
 let roomId, keepPeriod;
 
@@ -41,13 +42,13 @@ const getRoomId = key =>{
     )
     .then(({url, tabId}) =>{
       chrome.tabs.remove(tabId);
-      return url.match(/r=(.+)/).pop().split("&")[0];
+      return url.match(/dj\.life-is-tech\.com\/submit\.html[&?]r=([^&]+)/)[1];
     })
 }
 
 $(".back").on("click", e =>{history.back();history.back()})
 
-$("#getShortenURL").on("submit", e => {
+$getShortenURL.on("submit", e => {
   location.hash = "";
   getRoomId($inputShortenURL.val())
     .then( id => new Promise((resolve) => {
@@ -69,6 +70,7 @@ $("#getShortenURL").on("submit", e => {
     }))
     .then(()=> location.hash = "post")
     .catch(resson => error(resson))
+    $getShortenURL[0].reset();
     return false;
 });
 
