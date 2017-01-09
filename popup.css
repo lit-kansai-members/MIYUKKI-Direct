@@ -101,3 +101,15 @@ p{
 #init:target ~ #logo{
   width: calc(100% - 2em);
 }
+
+#loading{
+  position: fixed;
+  width: 60px;
+  top: 50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+}
+:target ~ #loading{
+  opacity: 0;
+}
+
