@@ -4,7 +4,7 @@
 }
 
 html, body, body > section{
-  height: 300px;
+  height: 400px;
   width: 250px;
   margin: 0;
   padding: 0;
@@ -81,7 +81,6 @@ ul{
 }
 
 p{
-  height: 2em;
   line-height: 2;
 }
 
