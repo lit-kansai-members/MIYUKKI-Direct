@@ -1,5 +1,25 @@
-const getRoomId = key =>
-  fetch(`http://lit.sh/${key}`, {redirect: "manual", mode: "no-cors"})
+const $window = $(window);
+
+const $inputShortenURL = $("#inputShortenURL");
+const $errorResult = $("#error-result");
+const $inputKeepPeriod = $("#inputKeepPeriod");
+
+const $showRoomId = $("#roomId");
+const $showKeepPeriod = $("#showKeepPeriod");
+
+let roomId, keepPeriod;
+
+
+const error = e =>{
+  console.error("something Error occured!", e)
+  location.hash = "error"
+  $errorResult.text(e);
+}
+
+
+const getRoomId = key =>{
+  const url = `http://lit.sh/${key}`
+  return fetch(url, {redirect: "manual", mode: "no-cors"})
     .then(responise =>{
       if(responise.type === "opaqueredirect"){
         Promise.resolve();
