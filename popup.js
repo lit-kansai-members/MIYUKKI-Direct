@@ -86,7 +86,9 @@ $window.on("hashchange", () =>{
       chrome.tabs.query({active:true}, t =>{
         const match = t[0].url.match(/youtube.com\/.*[?&]v=([-\w]+)/);
         if (match) {
-            videoId = match[1]
+          videoId = match[1]
+          $thumb.attr("src", `https://img.youtube.com/vi/${videoId}/0.jpg`);
+          $videoTitle.text(t[0].title.slice(0, -10));
         } else {
           error("YouTube上で起動してください。")
         }
