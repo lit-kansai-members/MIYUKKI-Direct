@@ -103,6 +103,7 @@ p{
 }
 
 #loading{
+  z-index: -1;
   position: fixed;
   width: 60px;
   top: 50%;
