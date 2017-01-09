@@ -79,6 +79,14 @@ $window.on("hashchange", () =>{
     case "post":
       $showRoomId.text(roomId);
       $showKeepPeriod.text(Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1));
+      chrome.tabs.query({active:true}, t =>{
+        const match = t[0].url.match(/youtube.com\/.*[?&]v=([-\w]+)/);
+        if (match) {
+            videoId = match[1]
+        } else {
+          error("YouTube上で起動してください。")
+        }
+      })
       break;
   }
 });
