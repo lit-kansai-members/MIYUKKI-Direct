@@ -43,3 +43,52 @@ const getRoomId = key =>{
       chrome.tabs.remove(tabId);
       return url.match(/r=(.+)/).pop().split("&")[0];
     })
+}
+
+$(".back").on("click", e =>{history.back();history.back()})
+
+$("#getShortenURL").on("submit", e => {
+  location.hash = "";
+  getRoomId($inputShortenURL.val())
+    .then( id => new Promise((resolve) => {
+      roomId = id;
+      const val = $inputKeepPeriod.val();
+      if ( 0 >= val ){
+        keepPeriod = "Infinity";
+      } else {
+        const toDay = new Date;
+        keepPeriod = (new Date(
+          toDay.getFullYear(),
+          toDay.getMonth(),
+          toDay.getDate() + ($inputKeepPeriod.val() - 0)
+        )).getTime();
+      }
+
+      chrome.storage.sync.set({roomId, keepPeriod},
+        () => resolve());
+    }))
+    .then(()=> location.hash = "post")
+    .catch(resson => error(resson))
+    return false;
+});
+
+$window.on("hashchange", () =>{
+  switch (location.hash.slice(1)){
+    case "post":
+      $showRoomId.text(roomId);
+      $showKeepPeriod.text(Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1));
+      break;
+  }
+});
+
+(new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
+  .then(v =>{
+    if(!v.roomId || !v.keepPeriod || new Date > v.keepPeriod) {
+      location.hash = "init";
+    } else {
+      ({roomId, keepPeriod} = v)
+      location.hash = "post";
+    }
+
+    $window.trigger("hashchange");
+  })
