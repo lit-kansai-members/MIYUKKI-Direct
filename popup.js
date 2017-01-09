@@ -8,6 +8,10 @@ const $showRoomId = $("#roomId");
 const $showKeepPeriod = $("#showKeepPeriod");
 const $getShortenURL  = $("#getShortenURL");
 
+const $videoTitle = $("#videoTitle");
+const $thumb = $("#thumb");
+const $submit = $("#submit");
+
 let roomId, keepPeriod, videoId;
 
 
