@@ -24,7 +24,7 @@ const getRoomId = key =>{
       if(responise.type === "opaqueredirect"){
         Promise.resolve();
       } else {
-        Promise.reject(`Requested URL ${url} is not redirectable URL.`);
+        Promise.reject(new Error(`Requested URL ${url} is not redirectable.`));
       }
     })
     .then(() => new Promise((resolve, reject) =>
