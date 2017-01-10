@@ -119,6 +119,11 @@ $submit.on("click", ()=> {
     .catch(reason => error(reason));
 });
 
+$("#logout").on("click", => {
+  chrome.storage.sync.clear();
+  location.reload();
+});
+
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
   .then(v =>{
     if(!v.roomId || !v.keepPeriod || new Date > v.keepPeriod) {
