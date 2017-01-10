@@ -4,7 +4,7 @@
 }
 
 html, body, body > section{
-  height: 300px;
+  height: 400px;
   width: 250px;
   margin: 0;
   padding: 0;
@@ -75,13 +75,22 @@ ul{
   flex-wrap: nowrap;
 }
 
+.ellipsis{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .stretch{
   flex-grow: 1;
   flex-shrink: 1;
 }
 
+.nowrap{
+  white-space: nowrap;
+}
+
 p{
-  height: 2em;
   line-height: 2;
 }
 
@@ -103,6 +112,7 @@ p{
 }
 
 #loading{
+  z-index: -1;
   position: fixed;
   width: 60px;
   top: 50%;
