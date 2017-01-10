@@ -46,7 +46,12 @@ const getRoomId = key =>{
     )
     .then(({url, tabId}) =>{
       chrome.tabs.remove(tabId);
-      return url.match(/dj\.life-is-tech\.com\/submit\.html[&?]r=([^&]+)/)[1];
+      const match = url.match(/dj\.life-is-tech\.com\/submit\.html[&?]r=([^&]+)/);
+      if(match){
+        return match[1]
+      } else {
+        throw new Error("不正なURLです。")
+      }
     })
 }
 
