@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>MIYUKKI Direct</title>
+  <script src="./jquery-3.1.1.min.js"></script>
+  <link rel="stylesheet" href="./popup.css">
+</head>
+<body>
+<section id="init">
+  <form action="" id="getShortenURL">
+    <p class="flex-container flex-row flex-nowrap">
+    <span>lit.sh/</span><input type="text" class="stretch" id="inputShortenURL" autofocus placeholder="URLを入力…">
+    </p>
+    <p>
+    <input id="inputKeepPeriod" type="number" value="0" min="0" col="2">日間保存
+    </p>
+    <ul>
+      <li>0の場合は無期限になります。</li>
+      <li>途中でキャンセルできます。</li>
+    </ul>
+    <p>
+    <button id="buttonStart" class="match-parent">START</button>
+    </p>
+  </form>
+</section>
+
+<section id="post">
+<p>
+  <small>
+      Logged in: <span id="roomId"></span> to <span id="showKeepPeriod"></span> day(s).
+  </small>
+</p>
+
+  <img src="" class="match-parent" id="thumb">
+
+<p class="flex-container flex-row flex-nowrap">
+  <span id="videoTitle" class="ellipsis stretch"></span><span class="nowrap"> を送信します</span>
+</p>
+<p>
+  よろしいですか？
+</p>
+<button id="submit" class="match-parent">SUBMIT</button>
+</section>
+
+<section id="error">
+エラーが発生しました。:
+<div id="error-result"></div>
+<button class="back match-parent">戻る</button>
+</section>
+
+<section id="success">
+  <p>
+    成功しました。
+    <br>
+    動画が再生されるまでお楽しみに！
+  </p>
+  <button class="back match-parent">戻る</button>
+</section>
+
+
+<img id="logo" src="./djmiyukki-logo.png" alt="DJ MIYUKKI SYSTEM">
+<img src="./ring-alt.svg" alt="loading" id="loading">
+<script src="popup.js"></script>
+</body>
+</html>

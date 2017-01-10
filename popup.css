@@ -1,0 +1,125 @@
+*{
+  transition: .2s;
+  box-sizing: border-box;
+}
+
+html, body, body > section{
+  height: 400px;
+  width: 250px;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #003147;
+  color: #fff;
+}
+
+body > section {
+  height: auto;
+  padding: 1em;
+  position: fixed;
+  left: 100%;
+  bottom: 0;
+}
+
+body > section:target{
+  left: 0;
+}
+
+input, button {
+  padding: .3em;
+  height: 2em;
+  line-height: 2em;
+  border: none;
+  background: #fff;
+}
+
+button{
+  line-height: normal;
+  background: black;
+  color: #fff;
+  border: solid 1px #fff;
+  text-align: center;
+  transition: .2s;
+  height: 2.5em;
+}
+
+button:hover{
+  background: #fff;
+  color: #00A3ED;
+}
+
+input[type="number"]{
+  width: 3em;
+}
+
+ul{
+  -webkit-padding-start: 1em;
+  margin: 1em 0;
+}
+
+.match-parent{
+  width: 100%;
+}
+
+.flex-container{
+  display:flex;
+}
+
+.flex-row{
+  flex-direction: row;
+}
+
+.flex-nowrap{
+  flex-wrap: nowrap;
+}
+
+.ellipsis{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.stretch{
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.nowrap{
+  white-space: nowrap;
+}
+
+p{
+  line-height: 2;
+}
+
+#logo{
+  position: fixed;
+  top: 1em;
+  left: 1em;
+  z-index: 999;
+  width: 40%;
+  opacity: 0;
+}
+
+:target ~ #logo{
+  opacity: 1;
+}
+
+#init:target ~ #logo{
+  width: calc(100% - 2em);
+}
+
+#loading{
+  z-index: -1;
+  position: fixed;
+  width: 60px;
+  top: 50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+}
+:target ~ #loading{
+  opacity: 0;
+}
+
