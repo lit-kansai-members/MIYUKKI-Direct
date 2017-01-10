@@ -119,7 +119,7 @@ $submit.on("click", ()=> {
     .catch(reason => error(reason));
 });
 
-$("#logout").on("click", => {
+$("#logout").on("click", () => {
   chrome.storage.sync.clear();
   location.reload();
 });
