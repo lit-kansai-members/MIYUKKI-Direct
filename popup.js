@@ -78,7 +78,7 @@ $getShortenURL.on("submit", e => {
         () => resolve());
     }))
     .then(()=> location.hash = "post")
-    .catch(resson => error(resson))
+    .catch(reason => error(reason))
     $getShortenURL[0].reset();
     return false;
 });
