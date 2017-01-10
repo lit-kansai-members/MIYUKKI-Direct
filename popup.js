@@ -97,6 +97,23 @@ $window.on("hashchange", () =>{
   }
 });
 
+$submit.on("click", ()=> {
+  location.hash = "";
+  const body = new FormData;
+  body.append("room_id", roomId);
+  body.append("id", videoId);
+  fetch("https://dj.life-is-tech.com/api",
+    { method: "POST", body})
+    .then(res => {
+      if(res.ok){
+        location.hash = "success";
+      } else {
+        error(res.status + res.statusText);
+      }
+    })
+    .catch(reason => error(reason));
+});
+
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
   .then(v =>{
     if(!v.roomId || !v.keepPeriod || new Date > v.keepPeriod) {
