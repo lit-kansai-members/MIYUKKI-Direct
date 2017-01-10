@@ -46,7 +46,7 @@ const getRoomId = key =>{
     )
     .then(({url, tabId}) =>{
       chrome.tabs.remove(tabId);
-      const match = url.match(/dj\.life-is-tech\.com\/submit\.html[&?]r=([^&]+)/);
+      const match = url.match(/dj\.life-is-tech\.com\/submit\.html?.*r=([^&]+)/);
       if(match){
         return match[1]
       } else {
@@ -89,7 +89,7 @@ $window.on("hashchange", () =>{
       $showRoomId.text(roomId);
       $showKeepPeriod.text(Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1));
       chrome.tabs.query({active:true}, t =>{
-        const match = t[0].url.match(/youtube.com\/.*[?&]v=([-\w]+)/);
+        const match = t[0].url.match(/youtube.com\/watch?.*v=([-\w]+)/);
         if (match) {
           videoId = match[1]
           $thumb.attr("src", `https://img.youtube.com/vi/${videoId}/0.jpg`);
