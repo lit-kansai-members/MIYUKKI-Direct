@@ -88,16 +88,35 @@ $window.on("hashchange", () =>{
     case "post":
       $showRoomId.text(roomId);
       $showKeepPeriod.text(Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1));
-      chrome.tabs.query({active:true}, t =>{
+      (new Promise((res, rej) => chrome.tabs.query({active:true}, t =>{
         const match = t[0].url.match(/youtube.com\/.*[?&]v=([-\w]+)/);
         if (match) {
           videoId = match[1]
-          $thumb.attr("src", `https://img.youtube.com/vi/${videoId}/0.jpg`);
-          $videoTitle.text(t[0].title.slice(0, -10));
+          res(match[1])
         } else {
-          error("YouTube上で起動してください。")
+          rej(new Error("YouTube上で起動してください。"));
         }
-      })
+      })))
+        .then(() => new Promise(res => chrome.identity.getAuthToken({interactive:true}, res)))
+        .then(token => fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${videoId}&access_token=${token}`))
+        .then(res => {
+          const contentType = res.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            return res.json();
+          } else {
+            throw new Error("不正な動画IDです。");
+          }
+        })
+        .then(res => {
+          const match = res.items[0].contentDetails.duration.match(/PT(\d+)M\d+S/).map(v => v - 0);
+          if(match[1] > 10){
+            throw new Error("動画は10分以内のものにしてください。");
+          } else {
+            $thumb.attr("src", res.items[0].snippet.thumbnails.high.url);
+            $videoTitle.text(res.items[0].snippet.title);
+          }
+        })
+        .catch(error)
       break;
   }
 });
