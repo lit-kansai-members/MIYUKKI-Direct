@@ -18,6 +18,7 @@
 	"permissions": [
     "https://dj.life-is-tech.com/api",
 		"storage",
-		"tabs"
+		"tabs",
+    "identity"
 	]
 }
