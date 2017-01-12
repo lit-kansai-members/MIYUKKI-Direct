@@ -55,6 +55,27 @@ const getRoomId = key =>{
     })
 }
 
+const checkVideoDuration = id =>
+  Promise.resolve()
+    .then(() => new Promise(res => chrome.identity.getAuthToken({interactive:true}, res)))
+    .then(token => fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${videoId}&access_token=${token}`))
+    .then(res => {
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        return res.json();
+      } else {
+        throw new Error("不正な動画IDです。");
+      }
+    })
+    .then(({items: [video]}) => {
+      const match = video.contentDetails.duration.match(/PT(\d+)M\d+S/).map(v => v - 0);
+      if(match[1] > 10){
+        throw new Error("動画は10分以内のものにしてください。");
+      } else {
+        return video;
+      }
+    })
+
 $(".back").on("click", e =>{history.back();history.back()})
 
 $getShortenURL.on("submit", e => {
@@ -97,24 +118,10 @@ $window.on("hashchange", () =>{
           rej(new Error("YouTube上で起動してください。"));
         }
       })))
-        .then(() => new Promise(res => chrome.identity.getAuthToken({interactive:true}, res)))
-        .then(token => fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${videoId}&access_token=${token}`))
+        .then(checkVideoDuration)
         .then(res => {
-          const contentType = res.headers.get("content-type");
-          if (contentType && contentType.includes("application/json")) {
-            return res.json();
-          } else {
-            throw new Error("不正な動画IDです。");
-          }
-        })
-        .then(res => {
-          const match = res.items[0].contentDetails.duration.match(/PT(\d+)M\d+S/).map(v => v - 0);
-          if(match[1] > 10){
-            throw new Error("動画は10分以内のものにしてください。");
-          } else {
-            $thumb.attr("src", res.items[0].snippet.thumbnails.high.url);
-            $videoTitle.text(res.items[0].snippet.title);
-          }
+          $thumb.attr("src", video.snippet.thumbnails.high.url);
+          $videoTitle.text(video.snippet.title);
         })
         .catch(error)
       break;
