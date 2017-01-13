@@ -68,8 +68,8 @@ const checkVideoDuration = id =>
       }
     })
     .then(({items: [video]}) => {
-      const match = video.contentDetails.duration.match(/PT(\d+)M\d+S/).map(v => v - 0);
-      if(match[1] > 10){
+      const match = video.contentDetails.duration.match(/PT((\d+)M)?\d+S/);
+      if(match[2] > 10){
         throw new Error("動画は10分以内のものにしてください。");
       } else {
         return video;
