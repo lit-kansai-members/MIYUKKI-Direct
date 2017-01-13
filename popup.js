@@ -99,7 +99,7 @@ $getShortenURL.on("submit", e => {
       chrome.storage.sync.set({roomId, keepPeriod},
         () => resolve());
     }))
-    .then(()=> location.hash = "post")
+    .then(()=> location.reload())
     .catch(reason => error(reason))
     $getShortenURL[0].reset();
     return false;
@@ -148,8 +148,7 @@ $submit.on("click", ()=> {
 });
 
 $("#logout").on("click", () => {
-  chrome.storage.sync.clear();
-  location.reload();
+  chrome.storage.sync.clear(location.reload);
 });
 
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
