@@ -9,6 +9,7 @@ const $showKeepPeriod = $("#showKeepPeriod");
 const $getShortenURL  = $("#getShortenURL");
 
 const $videoTitle = $("#videoTitle");
+const $videoDescription = $("#videoDescription");
 const $thumb = $("#thumb");
 const $submit = $("#submit");
 
@@ -122,6 +123,7 @@ $window.on("hashchange", () =>{
         .then(video => {
           $thumb.attr("src", video.snippet.thumbnails.high.url);
           $videoTitle.text(video.snippet.title);
+          $videoDescription.text(video.snippet.description)
         })
         .catch(error)
       break;
