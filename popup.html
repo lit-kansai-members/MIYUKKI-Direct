@@ -8,7 +8,9 @@
 </head>
 <body>
 <section id="init">
-  <form action="" id="getShortenURL">
+  <form action="" id="getShortenURL" class="flex-container flex-column full-parent">
+  <img class="match-parent" src="./djmiyukki-logo.png" alt="DJ MIYUKKI SYSTEM">
+    <div class="stretch"></div>
     <p class="flex-container flex-row flex-nowrap">
     <span>lit.sh/</span><input type="text" class="stretch" id="inputShortenURL" autofocus placeholder="URLを入力…">
     </p>
@@ -26,22 +28,15 @@
 </section>
 
 <section id="post">
-  <p><button id="logout">LOGOUT</button></p>
-<p>
-  <small>
-      Logged in: <span id="roomId"></span> to <span id="showKeepPeriod"></span> day(s).
-  </small>
-</p>
-
   <img src="" class="match-parent" id="thumb">
 
-<p class="flex-container flex-row flex-nowrap">
-  <span id="videoTitle" class="ellipsis stretch"></span><span class="nowrap"> を送信します</span>
-</p>
-<p>
-  よろしいですか？
-</p>
-<button id="submit" class="match-parent">SUBMIT</button>
+  <h2 id="videoTitle" class="ellipsis2"></h2>
+  <p id="videoDescription" class="ellipsis3"></p>
+  <p>
+    を送信します。
+    よろしいですか？
+  </p>
+  <button id="submit" class="match-parent">SUBMIT</button>
 </section>
 
 <section id="error">
@@ -59,8 +54,20 @@
   <button class="back match-parent">戻る</button>
 </section>
 
+<header>
+  <p class="flex-container">
+    <img src="./djmiyukki-logo.png" alt="DJ MIYUKKI SYSTEM" id="logo">
+    <button id="logout" class="stretch">LOGOUT</button>
+  </p>
+  <p>
+    <small>
+      Logged in: <span id="roomId"></span>
+      to <span id="showKeepPeriod"></span> day(s).
+    </small>
+  </p>
+  <p><input id="inputSearchQuery" type="search" placeholder="検索ワードを入力…" class="match-parent"></p>
+</header>
 
-<img id="logo" src="./djmiyukki-logo.png" alt="DJ MIYUKKI SYSTEM">
 <img src="./ring-alt.svg" alt="loading" id="loading">
 <script src="popup.js"></script>
 </body>
