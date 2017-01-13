@@ -119,7 +119,7 @@ $window.on("hashchange", () =>{
         }
       })))
         .then(checkVideoDuration)
-        .then(res => {
+        .then(video => {
           $thumb.attr("src", video.snippet.thumbnails.high.url);
           $videoTitle.text(video.snippet.title);
         })
