@@ -16,11 +16,18 @@ body {
 }
 
 body > section {
-  height: auto;
-  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 8em);
   position: fixed;
+  padding: 5%;
   left: 100%;
-  bottom: 0;
+  top: 12em;
+}
+
+#init{
+  top: 0;
+  height: 100%;
 }
 
 body > section:target{
