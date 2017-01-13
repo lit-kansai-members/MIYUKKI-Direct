@@ -74,6 +74,14 @@ const checkVideoDuration = id =>
       }
     })
 
+const toPost = video => {
+  $thumb.attr("src", video.snippet.thumbnails.high.url);
+  $videoTitle.text(video.snippet.title);
+  $videoDescription.text(video.snippet.description)
+  $submitForm[0].id.value = video.id;
+  location.hash = "post";
+}
+
 $(".back").on("click", e =>{history.back();history.back()})
 
 $getShortenURL.on("submit", e => {
@@ -100,13 +108,6 @@ $getShortenURL.on("submit", e => {
     .catch(reason => error(reason))
     $getShortenURL[0].reset();
     return false;
-});
-
-$window.on("hashchange", () =>{
-  switch (location.hash.slice(1)){
-    case "post":
-      break;
-  }
 });
 
 $submitForm.on("submit", ()=> {
@@ -144,14 +145,8 @@ $("#logout").on("click", () => chrome.storage.sync.clear(location.reload));
         }
       })))
         .then(checkVideoDuration)
-        .then(video => {
-          $thumb.attr("src", video.snippet.thumbnails.high.url);
-          $videoTitle.text(video.snippet.title);
-          $videoDescription.text(video.snippet.description)
-          $submitForm[0].id.value = video.id;
-        })
+        .then(toPost)
         .catch(error)
-      location.hash = "post";
     }
 
     $window.trigger("hashchange");
