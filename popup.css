@@ -131,16 +131,16 @@ p{
 }
 
 #logo{
-  position: fixed;
-  top: 1em;
-  left: 1em;
-  z-index: 999;
-  width: 40%;
-  opacity: 0;
+  height: 3em;
 }
 
-:target ~ #logo{
-  opacity: 1;
+header{
+  opacity:0;
+  padding: 5%;
+}
+
+:target:not(#init) ~ header{
+  opacity: 100;
 }
 
 #init:target ~ #logo{
