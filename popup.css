@@ -160,6 +160,10 @@ header{
 }
 
 #logout{
-  margin-left: 55%;
-  width: 40%;
+  margin: 0 1em;
+}
+
+#videoDescription{
+  margin: 0;
+  white-space: pre-wrap;
 }
