@@ -95,10 +95,26 @@ h1, h2, h3, h4, h5{
   flex-wrap: nowrap;
 }
 
-.ellipsis{
+.ellipsis, .ellipsis2, .ellipsis3{
   overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.ellipsis2, .ellipsis3{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.ellipsis{
+  white-space: nowrap;
+}
+
+.ellipsis2{
+  -webkit-line-clamp: 2;
+}
+
+.ellipsis3{
+  -webkit-line-clamp: 3;
 }
 
 .stretch{
