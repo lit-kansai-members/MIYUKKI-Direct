@@ -18,6 +18,13 @@
 	"permissions": [
     "https://dj.life-is-tech.com/api",
 		"storage",
-		"tabs"
-	]
+		"tabs",
+    "identity"
+	],
+  "oauth2": {
+    "client_id": "16840359990-i1u8m4k9oomf90oephctr3mridp2pjph.apps.googleusercontent.com",
+    "scopes": [
+    "https://www.googleapis.com/auth/youtube.readonly"
+    ]
+  }
 }

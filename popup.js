@@ -55,6 +55,27 @@ const getRoomId = key =>{
     })
 }
 
+const checkVideoDuration = id =>
+  Promise.resolve()
+    .then(() => new Promise(res => chrome.identity.getAuthToken({interactive:true}, res)))
+    .then(token => fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${videoId}&access_token=${token}`))
+    .then(res => {
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        return res.json();
+      } else {
+        throw new Error("不正な動画IDです。");
+      }
+    })
+    .then(({items: [video]}) => {
+      const match = video.contentDetails.duration.match(/PT(\d+)M\d+S/).map(v => v - 0);
+      if(match[1] > 10){
+        throw new Error("動画は10分以内のものにしてください。");
+      } else {
+        return video;
+      }
+    })
+
 $(".back").on("click", e =>{history.back();history.back()})
 
 $getShortenURL.on("submit", e => {
@@ -88,16 +109,21 @@ $window.on("hashchange", () =>{
     case "post":
       $showRoomId.text(roomId);
       $showKeepPeriod.text(Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1));
-      chrome.tabs.query({active:true}, t =>{
+      (new Promise((res, rej) => chrome.tabs.query({active:true}, t =>{
         const match = t[0].url.match(/youtube.com\/.*[?&]v=([-\w]+)/);
         if (match) {
           videoId = match[1]
-          $thumb.attr("src", `https://img.youtube.com/vi/${videoId}/0.jpg`);
-          $videoTitle.text(t[0].title.slice(0, -10));
+          res(match[1])
         } else {
-          error("YouTube上で起動してください。")
+          rej(new Error("YouTube上で起動してください。"));
         }
-      })
+      })))
+        .then(checkVideoDuration)
+        .then(res => {
+          $thumb.attr("src", video.snippet.thumbnails.high.url);
+          $videoTitle.text(video.snippet.title);
+        })
+        .catch(error)
       break;
   }
 });
@@ -117,6 +143,11 @@ $submit.on("click", ()=> {
       }
     })
     .catch(reason => error(reason));
+});
+
+$("#logout").on("click", () => {
+  chrome.storage.sync.clear();
+  location.reload();
 });
 
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
