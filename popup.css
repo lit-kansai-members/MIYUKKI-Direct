@@ -74,6 +74,11 @@ h1, h2, h3, h4, h5{
   width: 100%;
 }
 
+.full-parent{
+  height: 100%;
+  width: 100%;
+}
+
 .flex-container{
   display:flex;
 }
