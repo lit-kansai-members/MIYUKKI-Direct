@@ -11,10 +11,7 @@ const $getShortenURL  = $("#getShortenURL");
 const $videoTitle = $("#videoTitle");
 const $videoDescription = $("#videoDescription");
 const $thumb = $("#thumb");
-const $submit = $("#submit");
-
-let roomId, keepPeriod, videoId;
-
+const $submitForm = $("#submit");
 
 const error = e =>{
   console.error("something Error occured!", e)
@@ -59,7 +56,7 @@ const getRoomId = key =>{
 const checkVideoDuration = id =>
   Promise.resolve()
     .then(() => new Promise(res => chrome.identity.getAuthToken({interactive:true}, res)))
-    .then(token => fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${videoId}&access_token=${token}`))
+    .then(token => fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${id}&access_token=${token}`))
     .then(res => {
       const contentType = res.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
@@ -82,9 +79,9 @@ $(".back").on("click", e =>{history.back();history.back()})
 $getShortenURL.on("submit", e => {
   location.hash = "";
   getRoomId($inputShortenURL.val())
-    .then( id => new Promise((resolve) => {
-      roomId = id;
+    .then( roomId => new Promise((resolve) => {
       const val = $inputKeepPeriod.val();
+      let keepPeriod;
       if ( 0 >= val ){
         keepPeriod = "Infinity";
       } else {
@@ -108,8 +105,35 @@ $getShortenURL.on("submit", e => {
 $window.on("hashchange", () =>{
   switch (location.hash.slice(1)){
     case "post":
-      $showRoomId.text(roomId);
-      $showKeepPeriod.text(Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1));
+      break;
+  }
+});
+
+$submitForm.on("submit", ()=> {
+  location.hash = "";
+  fetch("https://dj.life-is-tech.com/api",
+    { method: "POST", body: new FormData($submitForm[0])})
+    .then(res => {
+      if(res.ok){
+        location.hash = "success";
+      } else {
+        error(res.status + res.statusText);
+      }
+    })
+    .catch(reason => error(reason));
+  return false;
+});
+
+$("#logout").on("click", () => chrome.storage.sync.clear(location.reload));
+
+(new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
+  .then(v =>{
+    if(!v.roomId || !v.keepPeriod || new Date > v.keepPeriod) {
+      location.hash = "init";
+    } else {
+      $showRoomId.text(v.roomId);
+      $submitForm[0].room_id.value = v.roomId;
+      $showKeepPeriod.text(Math.floor((v.keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1));
       (new Promise((res, rej) => chrome.tabs.query({active:true}, t =>{
         const match = t[0].url.match(/youtube.com\/.*[?&]v=([-\w]+)/);
         if (match) {
@@ -124,39 +148,9 @@ $window.on("hashchange", () =>{
           $thumb.attr("src", video.snippet.thumbnails.high.url);
           $videoTitle.text(video.snippet.title);
           $videoDescription.text(video.snippet.description)
+          $submitForm[0].id.value = video.id;
         })
         .catch(error)
-      break;
-  }
-});
-
-$submit.on("click", ()=> {
-  location.hash = "";
-  const body = new FormData;
-  body.append("room_id", roomId);
-  body.append("id", videoId);
-  fetch("https://dj.life-is-tech.com/api",
-    { method: "POST", body})
-    .then(res => {
-      if(res.ok){
-        location.hash = "success";
-      } else {
-        error(res.status + res.statusText);
-      }
-    })
-    .catch(reason => error(reason));
-});
-
-$("#logout").on("click", () => {
-  chrome.storage.sync.clear(location.reload);
-});
-
-(new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
-  .then(v =>{
-    if(!v.roomId || !v.keepPeriod || new Date > v.keepPeriod) {
-      location.hash = "init";
-    } else {
-      ({roomId, keepPeriod} = v)
       location.hash = "post";
     }
 
