@@ -99,15 +99,12 @@ h1, h2, h3, h4, h5{
 .ellipsis, .ellipsis2, .ellipsis3{
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.ellipsis2, .ellipsis3{
   display: -webkit-box;
   -webkit-box-orient: vertical;
 }
 
 .ellipsis{
-  white-space: nowrap;
+  -webkit-line-clamp: 1;
 }
 
 .ellipsis2{
