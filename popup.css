@@ -141,6 +141,10 @@ p{
 }
 
 header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   opacity:0;
   padding: 5%;
 }
