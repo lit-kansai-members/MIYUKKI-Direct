@@ -13,6 +13,8 @@ const $videoDescription = $("#videoDescription");
 const $thumb = $("#thumb");
 const $submitForm = $("#submit");
 
+const $inputSearchQuery = $("#inputSearchQuery");
+
 const error = e =>{
   console.error("something Error occured!", e)
   location.hash = "error"
@@ -126,6 +128,11 @@ $submitForm.on("submit", ()=> {
 });
 
 $("#logout").on("click", () => chrome.storage.sync.clear(location.reload));
+
+$inputSearchQuery.on("focus", () => {
+  location.hash = "search";
+  $inputSearchQuery[0].focus();
+});
 
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
   .then(v =>{
