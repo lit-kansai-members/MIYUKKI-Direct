@@ -124,6 +124,10 @@ h1, h2, h3, h4, h5{
   white-space: nowrap;
 }
 
+.thmub{
+  height: 10rem;
+}
+
 p{
   line-height: 2;
 }
@@ -168,14 +172,16 @@ header{
 
 #search-result{
   padding: 0;
+  font-size: .7em;
 }
 
 #search-result:after{
   content: "That's all of result.";
-  display: list-item;
   height: 1em;
+  width: 100%;
   list-style: none;
   text-align: center;
+  display: list-item;
 }
 
 #search-result.loading:after{
@@ -184,3 +190,15 @@ header{
   background: no-repeat bottom/3em url(./ring-alt.svg);
 }
 
+#search-result *{
+  margin: 0;
+  padding: 0;
+}
+
+#search-result li{
+  overflow: hidden;
+}
+
+#search-result .thumb{
+  height: 7em
+}
