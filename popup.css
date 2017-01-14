@@ -168,3 +168,22 @@ header{
   margin: 0;
   white-space: pre-wrap;
 }
+
+#search-result{
+  padding: 0;
+}
+
+#search-result:after{
+  content: "That's all of result.";
+  display: list-item;
+  height: 1em;
+  list-style: none;
+  text-align: center;
+}
+
+#search-result.loading:after{
+  content: "loading";
+  height: 5em;
+  background: no-repeat bottom/3em url(./ring-alt.svg);
+}
+
