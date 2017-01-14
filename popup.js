@@ -87,6 +87,22 @@ const toPost = video => {
   location.hash = "post";
 }
 
+const renderSearchResult = (videos, reset=true) =>{
+  if(reset) $searchResult.html("");
+  videos.forEach(video =>{
+    $searchResultTemplete.content
+      .querySelector(".title").innerText = video.snippet.title;
+    $searchResultTemplete.content
+      .querySelector(".description").innerText = video.snippet.description;
+    $searchResultTemplete.content
+      .querySelector(".thumb").src = video.snippet.thumbnails.medium.url;
+    $searchResultTemplete.content
+      .querySelector("li").addEventListener("click", () => toPost(video));
+    $searchResult.append(
+      document.importNode($searchResultTemplete.content, true));
+  })
+}
+
 $(".back").on("click", e =>{history.back();history.back()})
 
 $getShortenURL.on("submit", e => {
