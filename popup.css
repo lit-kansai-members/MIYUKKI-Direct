@@ -131,6 +131,10 @@ p{
   line-height: 2;
 }
 
+.margin-button{
+  margin: 0 1em;
+}
+
 #logo{
   height: 3em;
 }
@@ -158,10 +162,6 @@ header{
 }
 :target ~ #loading{
   opacity: 0;
-}
-
-#logout{
-  margin: 0 1em;
 }
 
 #videoDescription{
