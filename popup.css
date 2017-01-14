@@ -18,11 +18,12 @@ body {
 body > section {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 8em);
+  height: calc(100% - 12em);
   position: fixed;
   padding: 5%;
   left: 100%;
   top: 12em;
+  overflow: auto;
 }
 
 #init{
