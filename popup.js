@@ -15,6 +15,9 @@ const $submitForm = $("#submit");
 
 const $inputSearchQuery = $("#inputSearchQuery");
 
+const $searchResult = $("#search-result")
+const $searchResultTemplete = $("#searchResultTemplete")[0];
+
 const error = e =>{
   console.error("something Error occured!", e)
   location.hash = "error"
