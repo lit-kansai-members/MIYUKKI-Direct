@@ -1,6 +1,7 @@
 const $window = $(window);
 
-const $inputShortenURL = $("#inputShortenURL");
+const $inputShortenURL = $("#inputShortenURL")[0];
+const $selectUrlType = $("#selectUrlType")[0]
 const $errorResult = $("#error-result");
 const $inputKeepPeriod = $("#inputKeepPeriod");
 
@@ -30,9 +31,11 @@ let lastFetch = 0;
 let lastFetchURL = "";
 let nextPageToken = "";
 let searchResults = [];
+let videoInfo = {};
 
-const getRoomId = key =>{
-  const url = `http://lit.sh/${key}`
+$("a").on("click", ({target:{href: url}}) => chrome.tabs.create({url}))
+
+const getRoomId = url =>{
   return fetch(url, {redirect: "manual", mode: "no-cors"})
     .then(responise =>{
       if(responise.type === "opaqueredirect"){
@@ -166,7 +169,10 @@ $(".back").on("click", e =>{history.back();history.back()})
 
 $getShortenURL.on("submit", e => {
   location.hash = "";
-  getRoomId($inputShortenURL.val())
+  const {value: baseURL} = $selectUrlType;
+  const {value: param} = $inputShortenURL;
+  Promise.resolve()
+    .then(() => baseURL === "direct" ? param : getRoomId(baseURL + param))
     .then( roomId => new Promise((resolve) => {
       const val = $inputKeepPeriod.val();
       let keepPeriod;

@@ -20,16 +20,28 @@
   <form action="" id="getShortenURL" class="flex-container flex-column full-parent">
   <img class="match-parent" src="./djmiyukki-logo.png" alt="DJ MIYUKKI SYSTEM">
     <div class="stretch"></div>
-    <p class="flex-container flex-row flex-nowrap">
-    <span>lit.sh/</span><input type="text" class="stretch" id="inputShortenURL" autofocus placeholder="URLを入力…">
+    <p>
+      <select id="selectUrlType" class="match-parent">
+        <option value="http://lit.sh/" checked>lit.sh/</option>
+        <option value="direct">dj.life-is-tech.com/submit.html?r=</option>
+        <option value="">カスタム</option>
+      </select>
+      <input type="text" class="match-parent" id="inputShortenURL"
+      autofocus placeholder="URLの続きまたはルームIDを入力…">
     </p>
     <p>
     <input id="inputKeepPeriod" type="number" value="0" min="0" col="2">日間保存
     </p>
     <ul>
-      <li>0の場合は無期限になります。</li>
+      <li>どのURLで始まるかを選択して、その<strong>後に続く文字</strong>を入力してください。</li>
+      <li>カスタムを選択した場合はURL全て(http~から)を入力してください。</li>
+      <li>保存日数が0の場合は無期限になります。</li>
       <li>途中でキャンセルできます。</li>
     </ul>
+    <p>
+      この拡張機能は Life is Tech ! 非公式です。<br>
+      Fork me on <a href="https://github.com/lit-kansai-members/MIYUKKI-Direct">GitHub</a>!
+    </p>
     <p>
     <button id="buttonStart" class="match-parent">START</button>
     </p>

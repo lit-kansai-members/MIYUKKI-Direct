@@ -25,6 +25,9 @@
     margin: 5px;
 }
 
+a{
+  color: white;
+}
 
 html, body, body > section{
   height: 600px;
@@ -58,7 +61,7 @@ body > section:target{
   left: 0;
 }
 
-input, button {
+input, button, select{
   padding: .3em;
   height: 2.5em;
   line-height: 2em;
@@ -66,7 +69,7 @@ input, button {
   background: #fff;
 }
 
-button{
+button, select{
   line-height: normal;
   background: black;
   color: #fff;
