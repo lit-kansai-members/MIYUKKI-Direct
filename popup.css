@@ -226,6 +226,12 @@ header{
 
 #search-result li{
   overflow: hidden;
+  cursor: pointer;
+}
+
+#search-result li:hover {
+  transform: scale(.9);
+  filter: brightness(.7);
 }
 
 #search-result .thumb{
