@@ -74,6 +74,7 @@ button{
   text-align: center;
   transition: .2s;
   height: 2.5em;
+  cursor: pointer;
 }
 
 button:hover{
