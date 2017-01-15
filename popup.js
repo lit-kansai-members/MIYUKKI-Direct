@@ -9,11 +9,16 @@ const $showKeepPeriod = $("#showKeepPeriod");
 const $getShortenURL  = $("#getShortenURL");
 
 const $videoTitle = $("#videoTitle");
+const $videoDescription = $("#videoDescription");
 const $thumb = $("#thumb");
-const $submit = $("#submit");
+const $submitForm = $("#submit");
 
-let roomId, keepPeriod, videoId;
+const $inputSearchQuery = $("#inputSearchQuery");
 
+const $search = $("#search");
+const $searchResult = $("#search-result")
+const $searchResultTemplete = $("#searchResultTemplete")[0];
+const searchHeight = $search.height();
 
 const error = e =>{
   console.error("something Error occured!", e)
@@ -21,6 +26,10 @@ const error = e =>{
   $errorResult.text(e);
 }
 
+let lastFetch = 0;
+let lastFetchURL = "";
+let nextPageToken = "";
+let searchResults = [];
 
 const getRoomId = key =>{
   const url = `http://lit.sh/${key}`
@@ -58,7 +67,7 @@ const getRoomId = key =>{
 const checkVideoDuration = id =>
   Promise.resolve()
     .then(() => new Promise(res => chrome.identity.getAuthToken({interactive:true}, res)))
-    .then(token => fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${videoId}&access_token=${token}`))
+    .then(token => fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${id}&access_token=${token}`))
     .then(res => {
       const contentType = res.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
@@ -68,22 +77,99 @@ const checkVideoDuration = id =>
       }
     })
     .then(({items: [video]}) => {
-      const match = video.contentDetails.duration.match(/PT(\d+)M\d+S/).map(v => v - 0);
-      if(match[1] > 10){
+      const match = video.contentDetails.duration.match(/PT((\d+)M)?\d+S/);
+      if(match[2] > 10){
         throw new Error("動画は10分以内のものにしてください。");
       } else {
         return video;
       }
     })
 
+const toPost = video => {
+  $thumb.attr("src", video.snippet.thumbnails.high.url);
+  $videoTitle.text(video.snippet.title);
+  $videoDescription.text(video.snippet.description)
+  $submitForm[0].id.value = video.id;
+  location.hash = "post";
+}
+
+const renderSearchResult = (videos, reset=true) =>{
+  if(reset){
+    $searchResult.html("");
+    searchResults = [];
+  }
+  videos.forEach(video =>{
+    $searchResultTemplete.content
+      .querySelector(".title").innerText = video.snippet.title;
+    $searchResultTemplete.content
+      .querySelector(".description").innerText = video.snippet.description;
+    $searchResultTemplete.content
+      .querySelector(".thumb").src = video.snippet.thumbnails.medium.url;
+    $searchResultTemplete.content
+      .querySelector("li").addEventListener("click", () => toPost(video));
+    $searchResult.append(
+      document.importNode($searchResultTemplete.content, true));
+  })
+  searchResults = searchResults.concat(videos);
+}
+
+const search = () =>{
+  const {value} = $inputSearchQuery[0]
+  let URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=20&q=${encodeURIComponent(value)}`;
+  if(lastFetchURL !== URL){nextPageToken = null};
+  const isFirstFetch = !nextPageToken;
+  if(!nextPageToken && lastFetchURL === URL){
+    return;
+  }
+  const fetchId = ++lastFetch;
+  lastFetchURL = URL;
+  if(nextPageToken){
+    URL = `${URL}&pageToken=${nextPageToken}`
+  }
+  $searchResult.addClass("loading");
+  if(value){
+    Promise.resolve()
+      .then(() => new Promise(res => 
+        chrome.identity.getAuthToken({interactive:true}, res)))
+      .then(token => fetch(`${URL}&access_token=${token}`))
+      .then(res => {
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          return res.json();
+        } else {
+          throw new Error("No result found.");
+        }
+      })
+      .then(({nextPageToken: t, items: results}) =>{
+        nextPageToken = t;
+        return Promise.all(results
+        .map(({id:{videoId}}) =>
+          checkVideoDuration(videoId)
+            .catch(() => null)));
+      })
+      .then(results => results.filter(v => v))
+      .then(videos => {
+        if(fetchId === lastFetch) {
+          renderSearchResult(videos, isFirstFetch);
+          $searchResult.removeClass("loading");
+        }
+      })
+      .catch(error)
+  } else {
+    nextPageToken = null;
+    renderSearchResult([]);
+    $searchResult.removeClass("loading");
+  }
+}
+
 $(".back").on("click", e =>{history.back();history.back()})
 
 $getShortenURL.on("submit", e => {
   location.hash = "";
   getRoomId($inputShortenURL.val())
-    .then( id => new Promise((resolve) => {
-      roomId = id;
+    .then( roomId => new Promise((resolve) => {
       const val = $inputKeepPeriod.val();
+      let keepPeriod;
       if ( 0 >= val ){
         keepPeriod = "Infinity";
       } else {
@@ -98,17 +184,57 @@ $getShortenURL.on("submit", e => {
       chrome.storage.sync.set({roomId, keepPeriod},
         () => resolve());
     }))
-    .then(()=> location.hash = "post")
+    .then(()=> location.reload())
     .catch(reason => error(reason))
     $getShortenURL[0].reset();
     return false;
 });
 
-$window.on("hashchange", () =>{
-  switch (location.hash.slice(1)){
-    case "post":
-      $showRoomId.text(roomId);
-      $showKeepPeriod.text(Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1));
+$submitForm.on("submit", ()=> {
+  location.hash = "";
+  fetch("https://dj.life-is-tech.com/api",
+    { method: "POST", body: new FormData($submitForm[0])})
+    .then(res => {
+      if(res.ok){
+        location.hash = "success";
+      } else {
+        error(res.status + res.statusText);
+      }
+    })
+    .catch(reason => error(reason));
+  return false;
+});
+
+$("#logout").on("click", () => chrome.storage.sync.clear(location.reload));
+
+$inputSearchQuery.on("focus", () => {
+  location.hash = "search";
+  $inputSearchQuery[0].focus();
+});
+
+$inputSearchQuery.on("input", search);
+
+$search.on("scroll", () =>{
+  if($search.scrollTop() >= $searchResult.height() - searchHeight - 70){
+    search();
+  }
+});
+
+$searchResult.on("click", ({target}) =>{
+  const clicked = searchResults[
+    Array.from(document.querySelectorAll("#search-result li"))
+    .findIndex(el => el.contains(target))]
+  if(clicked) toPost(clicked);
+});
+
+(new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
+  .then(v =>{
+    if(!v.roomId || !v.keepPeriod || new Date > v.keepPeriod) {
+      location.hash = "init";
+    } else {
+      $showRoomId.text(v.roomId);
+      $submitForm[0].room_id.value = v.roomId;
+      $showKeepPeriod.text(Math.floor((v.keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1));
       (new Promise((res, rej) => chrome.tabs.query({active:true}, t =>{
         const match = t[0].url.match(/youtube.com\/.*[?&]v=([-\w]+)/);
         if (match) {
@@ -119,44 +245,8 @@ $window.on("hashchange", () =>{
         }
       })))
         .then(checkVideoDuration)
-        .then(res => {
-          $thumb.attr("src", video.snippet.thumbnails.high.url);
-          $videoTitle.text(video.snippet.title);
-        })
-        .catch(error)
-      break;
-  }
-});
-
-$submit.on("click", ()=> {
-  location.hash = "";
-  const body = new FormData;
-  body.append("room_id", roomId);
-  body.append("id", videoId);
-  fetch("https://dj.life-is-tech.com/api",
-    { method: "POST", body})
-    .then(res => {
-      if(res.ok){
-        location.hash = "success";
-      } else {
-        error(res.status + res.statusText);
-      }
-    })
-    .catch(reason => error(reason));
-});
-
-$("#logout").on("click", () => {
-  chrome.storage.sync.clear();
-  location.reload();
-});
-
-(new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
-  .then(v =>{
-    if(!v.roomId || !v.keepPeriod || new Date > v.keepPeriod) {
-      location.hash = "init";
-    } else {
-      ({roomId, keepPeriod} = v)
-      location.hash = "post";
+        .then(toPost)
+        .catch(() => location.hash = "search")
     }
 
     $window.trigger("hashchange");
