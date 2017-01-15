@@ -15,8 +15,10 @@ const $submitForm = $("#submit");
 
 const $inputSearchQuery = $("#inputSearchQuery");
 
+const $search = $("#search");
 const $searchResult = $("#search-result")
 const $searchResultTemplete = $("#searchResultTemplete")[0];
+const searchHeight = $search.height();
 
 const error = e =>{
   console.error("something Error occured!", e)
@@ -211,6 +213,12 @@ $inputSearchQuery.on("focus", () => {
 });
 
 $inputSearchQuery.on("input", search);
+
+$search.on("scroll", () =>{
+  if($search.scrollTop() >= $searchResult.height() - searchHeight - 70){
+    search();
+  }
+});
 
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
   .then(v =>{
