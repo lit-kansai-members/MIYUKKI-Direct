@@ -3,6 +3,29 @@
   box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+  background: none;
+  width: 5px;
+}
+
+::-webkit-scrollbar-corner {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+::-webkit-scrollbar-track-piece {
+    margin: 5px;
+}
+
+
 html, body, body > section{
   height: 600px;
   width: 340px;
