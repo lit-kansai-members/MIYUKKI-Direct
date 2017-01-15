@@ -42,8 +42,6 @@ body {
 }
 
 body > section {
-  display: flex;
-  flex-direction: column;
   height: calc(100% - 12em);
   position: fixed;
   padding: 5%;
