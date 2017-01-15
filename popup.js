@@ -231,7 +231,7 @@ $inputSearchQuery.on("input", search);
       })))
         .then(checkVideoDuration)
         .then(toPost)
-        .catch(error)
+        .catch(() => location.hash = "search")
     }
 
     $window.trigger("hashchange");
