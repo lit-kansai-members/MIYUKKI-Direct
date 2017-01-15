@@ -89,6 +89,7 @@ const checkVideoDuration = id =>
     })
 
 const toPost = video => {
+  videoInfo = video;
   $thumb.attr("src", video.snippet.thumbnails.high.url);
   $videoTitle.text(video.snippet.title);
   $videoDescription.text(video.snippet.description)
@@ -202,6 +203,10 @@ $submitForm.on("submit", ()=> {
     { method: "POST", body: new FormData($submitForm[0])})
     .then(res => {
       if(res.ok){
+        chrome.storage.sync.get("history", ({history = []}) =>{
+          history.push(videoInfo);
+          chrome.storage.sync.set({history});
+        });
         location.hash = "success";
       } else {
         error(res.status + res.statusText);
@@ -211,7 +216,8 @@ $submitForm.on("submit", ()=> {
   return false;
 });
 
-$("#logout").on("click", () => chrome.storage.sync.clear(location.reload));
+$("#logout").on("click", () => 
+  chrome.storage.sync.remove(["roomId", "keepPeriod"], location.reload));
 
 $inputSearchQuery.on("focus", () => {
   location.hash = "search";
