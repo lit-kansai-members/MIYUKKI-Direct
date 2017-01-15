@@ -220,6 +220,13 @@ $search.on("scroll", () =>{
   }
 });
 
+$searchResult.on("click", ({target}) =>{
+  const clicked = searchResults[
+    Array.from(document.querySelectorAll("#search-result li"))
+    .findIndex(el => el.contains(target))]
+  if(clicked) toPost(clicked);
+});
+
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
   .then(v =>{
     if(!v.roomId || !v.keepPeriod || new Date > v.keepPeriod) {
