@@ -42,8 +42,6 @@ body {
 }
 
 body > section {
-  display: flex;
-  flex-direction: column;
   height: calc(100% - 12em);
   position: fixed;
   padding: 5%;
@@ -208,7 +206,8 @@ header{
 }
 
 #search-result:after{
-  content: "That's all of result.";
+  margin: 2em 0;
+  content: "That's all to show.";
   height: 1em;
   width: 100%;
   list-style: none;
@@ -222,12 +221,10 @@ header{
   background: no-repeat bottom/3em url(./ring-alt.svg);
 }
 
-#search-result *{
+#search-result li{
+  height: 7em;
   margin: 0;
   padding: 0;
-}
-
-#search-result li{
   overflow: hidden;
   cursor: pointer;
 }
@@ -239,4 +236,13 @@ header{
 
 #search-result .thumb{
   height: 7em
+}
+
+#history{
+  margin: 1em 0;
+}
+
+#history span{
+  line-height: 2.5;
+  margin: 0 1em;
 }

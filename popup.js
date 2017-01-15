@@ -21,6 +21,9 @@ const $searchResult = $("#search-result")
 const $searchResultTemplete = $("#searchResultTemplete")[0];
 const searchHeight = $search.height();
 
+const $removeHistory = $("#removeHistory");
+const $history = $("#history");
+
 const error = e =>{
   console.error("something Error occured!", e)
   location.hash = "error"
@@ -89,6 +92,7 @@ const checkVideoDuration = id =>
     })
 
 const toPost = video => {
+  videoInfo = video;
   $thumb.attr("src", video.snippet.thumbnails.high.url);
   $videoTitle.text(video.snippet.title);
   $videoDescription.text(video.snippet.description)
@@ -153,6 +157,7 @@ const search = () =>{
       .then(results => results.filter(v => v))
       .then(videos => {
         if(fetchId === lastFetch) {
+          $history.css({display: "none"});
           renderSearchResult(videos, isFirstFetch);
           $searchResult.removeClass("loading");
         }
@@ -160,10 +165,19 @@ const search = () =>{
       .catch(error)
   } else {
     nextPageToken = null;
-    renderSearchResult([]);
-    $searchResult.removeClass("loading");
+    $history.css({display: ""});
+    chrome.storage.sync.get("history",({history=[]}) =>{
+      renderSearchResult(history);
+      $searchResult.removeClass("loading");
+    });
   }
 }
+
+$window.on("hashchange", () =>{
+  if(location.hash === "#search" && !$inputSearchQuery.val()){
+    search();
+  }
+});
 
 $(".back").on("click", e =>{history.back();history.back()})
 
@@ -202,6 +216,10 @@ $submitForm.on("submit", ()=> {
     { method: "POST", body: new FormData($submitForm[0])})
     .then(res => {
       if(res.ok){
+        chrome.storage.sync.get("history", ({history = []}) =>{
+          history.push(videoInfo);
+          chrome.storage.sync.set({history});
+        });
         location.hash = "success";
       } else {
         error(res.status + res.statusText);
@@ -211,7 +229,11 @@ $submitForm.on("submit", ()=> {
   return false;
 });
 
-$("#logout").on("click", () => chrome.storage.sync.clear(location.reload));
+$("#logout").on("click", () => 
+  chrome.storage.sync.remove(["roomId", "keepPeriod"], ()=> location.reload()));
+
+$removeHistory.on("click", ()=>
+  chrome.storage.sync.remove("history", () => location.reload()))
 
 $inputSearchQuery.on("focus", () => {
   location.hash = "search";
