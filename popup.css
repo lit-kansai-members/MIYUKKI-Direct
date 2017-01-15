@@ -206,7 +206,8 @@ header{
 }
 
 #search-result:after{
-  content: "That's all of result.";
+  margin: 2em 0;
+  content: "That's all to show.";
   height: 1em;
   width: 100%;
   list-style: none;
