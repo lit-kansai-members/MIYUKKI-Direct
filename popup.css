@@ -25,6 +25,9 @@
     margin: 5px;
 }
 
+a{
+  color: white;
+}
 
 html, body, body > section{
   height: 600px;
