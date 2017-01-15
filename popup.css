@@ -237,3 +237,12 @@ header{
 #search-result .thumb{
   height: 7em
 }
+
+#history{
+  margin: 1em 0;
+}
+
+#history span{
+  line-height: 2.5;
+  margin: 0 1em;
+}
