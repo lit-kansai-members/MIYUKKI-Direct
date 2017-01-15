@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "MIYUKKI Direct",
-	"version": "0.0.0",
+	"version": "0.2.0",
 	"description": "A DJ MIYUKKI SYSTEM client .",
 	"icons": {
 		"16": "icon16.png",
@@ -18,6 +18,13 @@
 	"permissions": [
     "https://dj.life-is-tech.com/api",
 		"storage",
-		"tabs"
-	]
+		"tabs",
+    "identity"
+	],
+  "oauth2": {
+    "client_id": "16840359990-i1u8m4k9oomf90oephctr3mridp2pjph.apps.googleusercontent.com",
+    "scopes": [
+    "https://www.googleapis.com/auth/youtube.readonly"
+    ]
+  }
 }

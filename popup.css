@@ -3,9 +3,35 @@
   box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+  background: none;
+  width: 5px;
+}
+
+::-webkit-scrollbar-corner {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+::-webkit-scrollbar-track-piece {
+    margin: 5px;
+}
+
+a{
+  color: white;
+}
+
 html, body, body > section{
-  height: 400px;
-  width: 250px;
+  height: 600px;
+  width: 340px;
   margin: 0;
   padding: 0;
 }
@@ -16,26 +42,32 @@ body {
 }
 
 body > section {
-  height: auto;
-  padding: 1em;
+  height: calc(100% - 12em);
   position: fixed;
+  padding: 5%;
   left: 100%;
-  bottom: 0;
+  top: 12em;
+  overflow: auto;
+}
+
+#init{
+  top: 0;
+  height: 100%;
 }
 
 body > section:target{
   left: 0;
 }
 
-input, button {
+input, button, select{
   padding: .3em;
-  height: 2em;
+  height: 2.5em;
   line-height: 2em;
   border: none;
   background: #fff;
 }
 
-button{
+button, select{
   line-height: normal;
   background: black;
   color: #fff;
@@ -43,6 +75,7 @@ button{
   text-align: center;
   transition: .2s;
   height: 2.5em;
+  cursor: pointer;
 }
 
 button:hover{
@@ -59,7 +92,16 @@ ul{
   margin: 1em 0;
 }
 
+h1, h2, h3, h4, h5{
+  margin: 0;
+}
+
 .match-parent{
+  width: 100%;
+}
+
+.full-parent{
+  height: 100%;
   width: 100%;
 }
 
@@ -71,14 +113,31 @@ ul{
   flex-direction: row;
 }
 
+.flex-column{
+  flex-direction: column;
+}
+
 .flex-nowrap{
   flex-wrap: nowrap;
 }
 
-.ellipsis{
+.ellipsis, .ellipsis2, .ellipsis3{
   overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.ellipsis{
+  -webkit-line-clamp: 1;
+}
+
+.ellipsis2{
+  -webkit-line-clamp: 2;
+}
+
+.ellipsis3{
+  -webkit-line-clamp: 3;
 }
 
 .stretch{
@@ -90,21 +149,33 @@ ul{
   white-space: nowrap;
 }
 
+.thmub{
+  height: 10rem;
+}
+
 p{
   line-height: 2;
 }
 
-#logo{
-  position: fixed;
-  top: 1em;
-  left: 1em;
-  z-index: 999;
-  width: 40%;
-  opacity: 0;
+.margin-button{
+  margin: 0 1em;
 }
 
-:target ~ #logo{
-  opacity: 1;
+#logo{
+  height: 3em;
+}
+
+header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity:0;
+  padding: 5%;
+}
+
+:target:not(#init) ~ header{
+  opacity: 100;
 }
 
 #init:target ~ #logo{
@@ -123,7 +194,55 @@ p{
   opacity: 0;
 }
 
-#logout{
-  margin-left: 55%;
-  width: 40%;
+#videoDescription{
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+#search-result{
+  padding: 0;
+  margin: 0;
+  font-size: .7em;
+}
+
+#search-result:after{
+  margin: 2em 0;
+  content: "That's all to show.";
+  height: 1em;
+  width: 100%;
+  list-style: none;
+  text-align: center;
+  display: list-item;
+}
+
+#search-result.loading:after{
+  content: "loading";
+  height: 5em;
+  background: no-repeat bottom/3em url(./ring-alt.svg);
+}
+
+#search-result li{
+  height: 7em;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+#search-result li:hover {
+  transform: scale(.9);
+  filter: brightness(.7);
+}
+
+#search-result .thumb{
+  height: 7em
+}
+
+#history{
+  margin: 1em 0;
+}
+
+#history span{
+  line-height: 2.5;
+  margin: 0 1em;
 }

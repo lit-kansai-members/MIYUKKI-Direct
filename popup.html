@@ -5,20 +5,43 @@
   <title>MIYUKKI Direct</title>
   <script src="./jquery-3.1.1.min.js"></script>
   <link rel="stylesheet" href="./popup.css">
+  <template id="searchResultTemplete">
+    <li class="flex-container match-parent">
+      <img class="thumb" src="" alt="">
+      <div class="stretch">
+        <h2 class="ellipsis title"></h2>
+        <p class="ellipsis2 description"></p>
+      </div>
+    </li>
+  </template>
 </head>
 <body>
 <section id="init">
-  <form action="" id="getShortenURL">
-    <p class="flex-container flex-row flex-nowrap">
-    <span>lit.sh/</span><input type="text" class="stretch" id="inputShortenURL" autofocus placeholder="URLを入力…">
+  <form action="" id="getShortenURL" class="flex-container flex-column full-parent">
+  <img class="match-parent" src="./djmiyukki-logo.png" alt="DJ MIYUKKI SYSTEM">
+    <div class="stretch"></div>
+    <p>
+      <select id="selectUrlType" class="match-parent">
+        <option value="http://lit.sh/" checked>lit.sh/</option>
+        <option value="direct">dj.life-is-tech.com/submit.html?r=</option>
+        <option value="">カスタム</option>
+      </select>
+      <input type="text" class="match-parent" id="inputShortenURL"
+      autofocus placeholder="URLの続きまたはルームIDを入力…">
     </p>
     <p>
     <input id="inputKeepPeriod" type="number" value="0" min="0" col="2">日間保存
     </p>
     <ul>
-      <li>0の場合は無期限になります。</li>
+      <li>どのURLで始まるかを選択して、その<strong>後に続く文字</strong>を入力してください。</li>
+      <li>カスタムを選択した場合はURL全て(http~から)を入力してください。</li>
+      <li>保存日数が0の場合は無期限になります。</li>
       <li>途中でキャンセルできます。</li>
     </ul>
+    <p>
+      この拡張機能は Life is Tech ! 非公式です。<br>
+      Fork me on <a href="https://github.com/lit-kansai-members/MIYUKKI-Direct">GitHub</a>!
+    </p>
     <p>
     <button id="buttonStart" class="match-parent">START</button>
     </p>
@@ -26,41 +49,62 @@
 </section>
 
 <section id="post">
-  <p><button id="logout">LOGOUT</button></p>
-<p>
-  <small>
-      Logged in: <span id="roomId"></span> to <span id="showKeepPeriod"></span> day(s).
-  </small>
-</p>
-
   <img src="" class="match-parent" id="thumb">
 
-<p class="flex-container flex-row flex-nowrap">
-  <span id="videoTitle" class="ellipsis stretch"></span><span class="nowrap"> を送信します</span>
-</p>
-<p>
-  よろしいですか？
-</p>
-<button id="submit" class="match-parent">SUBMIT</button>
+  <h2 id="videoTitle" class="ellipsis2"></h2>
+  <p id="videoDescription" class="ellipsis3"></p>
+  <p>
+    を送信します。
+    よろしいですか？
+  </p>
+  <form id="submit" action="">
+    <input type="hidden" name="id">
+    <input type="hidden" name="room_id">
+    <button class="match-parent">SUBMIT</button>
+  </form>
+</section>
+
+<section id="search">
+<div id="history" class="flex-container">
+  <img src="./history.svg" alt="">
+  <span>送信履歴</span>
+  <button id="removeHistory" class="stretch">削除</button>
+</div>
+<ul id="search-result" class="match-parent"></ul>
 </section>
 
 <section id="error">
 エラーが発生しました。:
-<div id="error-result"></div>
+<p id="error-result"></p>
 <button class="back match-parent">戻る</button>
 </section>
 
 <section id="success">
   <p>
     成功しました。
-    <br>
+  </p>
+  <p>
     動画が再生されるまでお楽しみに！
   </p>
   <button class="back match-parent">戻る</button>
 </section>
 
+<header>
+  <p class="flex-container">
+    <img src="./djmiyukki-logo.png" alt="DJ MIYUKKI SYSTEM" id="logo">
+    <button id="logout" class="stretch margin-button">LOGOUT</button>
+  </p>
+  <p>
+    <small>
+      Logged in: <span id="roomId"></span>
+      to <span id="showKeepPeriod"></span> day(s).
+    </small>
+  </p>
+  <p class="flex-container">
+    <input id="inputSearchQuery" type="search" placeholder="検索ワードを入力…" class="stretch">
+  </p>
+</header>
 
-<img id="logo" src="./djmiyukki-logo.png" alt="DJ MIYUKKI SYSTEM">
 <img src="./ring-alt.svg" alt="loading" id="loading">
 <script src="popup.js"></script>
 </body>
