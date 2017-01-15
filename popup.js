@@ -25,6 +25,9 @@ const error = e =>{
 }
 
 let lastFetch = 0;
+let lastFetchURL = "";
+let nextPageToken = "";
+let searchResults = [];
 
 const getRoomId = key =>{
   const url = `http://lit.sh/${key}`
@@ -89,7 +92,10 @@ const toPost = video => {
 }
 
 const renderSearchResult = (videos, reset=true) =>{
-  if(reset) $searchResult.html("");
+  if(reset){
+    $searchResult.html("");
+    searchResults = [];
+  }
   videos.forEach(video =>{
     $searchResultTemplete.content
       .querySelector(".title").innerText = video.snippet.title;
@@ -102,6 +108,56 @@ const renderSearchResult = (videos, reset=true) =>{
     $searchResult.append(
       document.importNode($searchResultTemplete.content, true));
   })
+  searchResults = searchResults.concat(videos);
+}
+
+const search = () =>{
+  const {value} = $inputSearchQuery[0]
+  let URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=20&q=${encodeURIComponent(value)}`;
+  if(lastFetchURL !== URL){nextPageToken = null};
+  const isFirstFetch = !nextPageToken;
+  if(!nextPageToken && lastFetchURL === URL){
+    return;
+  }
+  const fetchId = ++lastFetch;
+  lastFetchURL = URL;
+  if(nextPageToken){
+    URL = `${URL}&pageToken=${nextPageToken}`
+  }
+  $searchResult.addClass("loading");
+  if(value){
+    Promise.resolve()
+      .then(() => new Promise(res => 
+        chrome.identity.getAuthToken({interactive:true}, res)))
+      .then(token => fetch(`${URL}&access_token=${token}`))
+      .then(res => {
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          return res.json();
+        } else {
+          throw new Error("No result found.");
+        }
+      })
+      .then(({nextPageToken: t, items: results}) =>{
+        nextPageToken = t;
+        return Promise.all(results
+        .map(({id:{videoId}}) =>
+          checkVideoDuration(videoId)
+            .catch(() => null)));
+      })
+      .then(results => results.filter(v => v))
+      .then(videos => {
+        if(fetchId === lastFetch) {
+          renderSearchResult(videos, isFirstFetch);
+          $searchResult.removeClass("loading");
+        }
+      })
+      .catch(error)
+  } else {
+    nextPageToken = null;
+    renderSearchResult([]);
+    $searchResult.removeClass("loading");
+  }
 }
 
 $(".back").on("click", e =>{history.back();history.back()})
@@ -154,43 +210,7 @@ $inputSearchQuery.on("focus", () => {
   $inputSearchQuery[0].focus();
 });
 
-$inputSearchQuery.on("input", e =>{
-  const {value} = $inputSearchQuery[0]
-  const fetchId = ++lastFetch;
-  $searchResult.addClass("loading");
-  if(value){
-    Promise.resolve()
-      .then(() => new Promise(res => 
-        chrome.identity.getAuthToken({interactive:true}, res)))
-      .then(token => fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=20&access_token=${token}&q=${encodeURIComponent(value)}`))
-      .then(res => {
-        const contentType = res.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          return res.json();
-        } else {
-          throw new Error("No result found.");
-        }
-      })
-      .then(({nextPageToken, items: results}) =>{
-        const queue = results
-        .map(({id:{videoId}}) =>
-          checkVideoDuration(videoId)
-            .catch(() => null));
-        queue.push(nextPageToken);
-        return Promise.all(queue);
-      })
-      .then(results => results.filter(v => v))
-      .then(videos => {
-        if(fetchId === lastFetch) {
-          $searchResult.data("nextPageToken", videos.pop());
-          renderSearchResult(videos);
-          $searchResult.removeClass("loading");
-        }
-      })
-  } else {
-    renderSearchResult([]);
-  }
-});
+$inputSearchQuery.on("input", search);
 
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
   .then(v =>{
