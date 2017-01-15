@@ -20,8 +20,14 @@
   <form action="" id="getShortenURL" class="flex-container flex-column full-parent">
   <img class="match-parent" src="./djmiyukki-logo.png" alt="DJ MIYUKKI SYSTEM">
     <div class="stretch"></div>
-    <p class="flex-container flex-row flex-nowrap">
-    <span>lit.sh/</span><input type="text" class="stretch" id="inputShortenURL" autofocus placeholder="URLを入力…">
+    <p>
+      <select id="selectUrlType" class="match-parent">
+        <option value="http://lit.sh/" checked>lit.sh/</option>
+        <option value="direct">dj.life-is-tech.com/submit.html?r=</option>
+        <option value="">カスタム</option>
+      </select>
+      <input type="text" class="match-parent" id="inputShortenURL"
+      autofocus placeholder="URLの続きまたはルームIDを入力…">
     </p>
     <p>
     <input id="inputKeepPeriod" type="number" value="0" min="0" col="2">日間保存
