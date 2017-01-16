@@ -270,7 +270,6 @@ $searchResult.on("click", ({target}) =>{
       (new Promise((res, rej) => chrome.tabs.query({active:true}, t =>{
         const match = t[0].url.match(/youtube.com\/.*[?&]v=([-\w]+)/);
         if (match) {
-          videoId = match[1]
           res(match[1])
         } else {
           rej(new Error("YouTube上で起動してください。"));
