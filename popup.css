@@ -186,6 +186,34 @@ header{
   display: none;
 }
 
+#autocompletes{
+  opacity: .8;
+  max-height: 16em;
+  overflow-y: scroll;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  list-style: none;
+}
+
+#autocompletes li{
+  width: 100%;
+  border: solid 1px;
+  background: #000;
+  padding: .5em;
+}
+
+#autocompletes li:not(:last-child) {
+  border-bottom: none;
+}
+
+#autocompletes li.focused{
+  background: #44f;
+}
+
 #loading{
   z-index: -1;
   position: fixed;
