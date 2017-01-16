@@ -41,10 +41,8 @@ $("a").on("click", ({target:{href: url}}) => chrome.tabs.create({url}))
 const getRoomId = url =>{
   return fetch(url, {redirect: "manual", mode: "no-cors"})
     .then(responise =>{
-      if(responise.type === "opaqueredirect"){
-        Promise.resolve();
-      } else {
-        Promise.reject(new Error(`Requested URL ${url} is not redirectable.`));
+      if(responise.type !== "opaqueredirect"){
+        throw new Error(`Requested URL ${url} is not redirectable.`);
       }
     })
     .then(() => new Promise((resolve, reject) =>
