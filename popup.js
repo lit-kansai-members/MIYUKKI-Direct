@@ -61,7 +61,7 @@ const getRoomId = url =>{
     )
     .then(({url, tabId}) =>{
       chrome.tabs.remove(tabId);
-      const match = url.match(/dj\.life-is-tech\.com\/submit\.html[&?]r=([^&]+)/);
+      const match = url.match(/dj\.life-is-tech\.com\/submit\.html?.*r=([^&]+)/);
       if(match){
         return match[1]
       } else {
