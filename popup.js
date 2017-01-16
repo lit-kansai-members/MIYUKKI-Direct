@@ -244,7 +244,7 @@ $inputSearchQuery.on("focus", () => {
 $inputSearchQuery.on("input", () => search(true));
 
 $search.on("scroll", () =>{
-  if($search.scrollTop() >= $searchResult.height() - searchHeight - 70){
+  if($search.scrollTop() >= $searchResult.height() - searchHeight - 70 && nextPageToken){
     search(false);
   }
 });
