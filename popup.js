@@ -178,7 +178,9 @@ $window.on("hashchange", () =>{
   }
 });
 
-$(".back").on("click", e =>{history.back();history.back()})
+$(".back").on("click", e =>{
+  history.go(-2);
+})
 
 $getShortenURL.on("submit", e => {
   location.hash = "";
