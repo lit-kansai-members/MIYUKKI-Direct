@@ -121,7 +121,7 @@ h1, h2, h3, h4, h5{
   flex-wrap: nowrap;
 }
 
-.ellipsis, .ellipsis2, .ellipsis3{
+.ellipsis, .ellipsis2, .ellipsis6{
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -136,8 +136,8 @@ h1, h2, h3, h4, h5{
   -webkit-line-clamp: 2;
 }
 
-.ellipsis3{
-  -webkit-line-clamp: 3;
+.ellipsis6{
+  -webkit-line-clamp: 6;
 }
 
 .stretch{
