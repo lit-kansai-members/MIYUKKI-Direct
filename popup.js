@@ -1,3 +1,5 @@
+"use strict"
+
 const $window = $(window);
 
 const $inputShortenURL = $("#inputShortenURL")[0];
