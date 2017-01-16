@@ -128,6 +128,7 @@ const search = isFirstFetch =>{
     return;
   }
   const fetchId = ++lastFetch;
+  let _token;
   lastFetchURL = URL;
   if(nextPageToken){
     URL = `${URL}&pageToken=${nextPageToken}`
@@ -147,7 +148,7 @@ const search = isFirstFetch =>{
         }
       })
       .then(({nextPageToken: t, items: results}) =>{
-        nextPageToken = t;
+        _token = t;
         return Promise.all(results
         .map(({id:{videoId}}) =>
           checkVideoDuration(videoId)
@@ -156,12 +157,13 @@ const search = isFirstFetch =>{
       .then(results => results.filter(v => v))
       .then(videos => {
         if(fetchId === lastFetch) {
+          nextPageToken = _token;
           $history.css({display: "none"});
           renderSearchResult(videos, isFirstFetch);
           $searchResult.removeClass("loading");
         }
       })
-      .catch(() => {location.hash = ""; error()})
+      .catch(r => {location.hash = ""; error(r)})
   } else {
     nextPageToken = null;
     $history.css({display: ""});
