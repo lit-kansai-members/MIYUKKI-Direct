@@ -13,7 +13,7 @@ const $getShortenURL  = $("#getShortenURL");
 
 const $videoTitle = $("#videoTitle");
 const $videoDescription = $("#videoDescription");
-const $thumb = $("#thumb");
+const $player = $("#player");
 const $submitForm = $("#submit");
 
 const $inputSearchQuery = $("#inputSearchQuery");
@@ -93,7 +93,7 @@ const checkVideoDuration = id =>
 
 const toPost = video => {
   videoInfo = video;
-  $thumb.attr("src", video.snippet.thumbnails.high.url);
+  $player.attr("src", `https://www.youtube.com/embed/${video.id}?color=white&fs=0&rel=0&showinfo=0`);
   $videoTitle.text(video.snippet.title);
   $videoDescription.text(video.snippet.description)
   $submitForm[0].id.value = video.id;
