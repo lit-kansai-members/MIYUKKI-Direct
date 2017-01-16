@@ -268,16 +268,16 @@ $searchResult.addEventListener("click", ({target}) =>{
       $showRoomId.innerText = roomId;
       $submitForm.room_id.value = roomId;
       $showKeepPeriod.innerText = Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1);
-      (new Promise((res, rej) => chrome.tabs.query({active:true}, t =>{
+      (new Promise((res, rej) => chrome.tabs.query({active:true, currentWindow: true}, t =>{
         const match = t[0].url.match(/youtube.com\/.*[?&]v=([-\w]+)/);
         if (match) {
           res(match[1])
         } else {
-          rej(new Error("YouTube上で起動してください。"));
+          location.hash = "search";
         }
       })))
         .then(checkVideoDuration)
         .then(toPost)
-        .catch(() => location.hash = "search")
+        .catch(error);
     }
   })
