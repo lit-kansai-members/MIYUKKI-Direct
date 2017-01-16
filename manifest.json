@@ -18,6 +18,7 @@
 	},
 	"permissions": [
     "https://dj.life-is-tech.com/api",
+    "http://suggestqueries.google.com/complete/search*",
 		"storage",
 		"tabs",
     "identity"
