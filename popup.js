@@ -1,3 +1,5 @@
+"use strict"
+
 const $window = $(window);
 
 const $inputShortenURL = $("#inputShortenURL")[0];
@@ -41,10 +43,8 @@ $("a").on("click", ({target:{href: url}}) => chrome.tabs.create({url}))
 const getRoomId = url =>{
   return fetch(url, {redirect: "manual", mode: "no-cors"})
     .then(responise =>{
-      if(responise.type === "opaqueredirect"){
-        Promise.resolve();
-      } else {
-        Promise.reject(new Error(`Requested URL ${url} is not redirectable.`));
+      if(responise.type !== "opaqueredirect"){
+        throw new Error(`Requested URL ${url} is not redirectable.`);
       }
     })
     .then(() => new Promise((resolve, reject) =>
@@ -128,6 +128,7 @@ const search = isFirstFetch =>{
     return;
   }
   const fetchId = ++lastFetch;
+  let _token;
   lastFetchURL = URL;
   if(nextPageToken){
     URL = `${URL}&pageToken=${nextPageToken}`
@@ -147,7 +148,7 @@ const search = isFirstFetch =>{
         }
       })
       .then(({nextPageToken: t, items: results}) =>{
-        nextPageToken = t;
+        _token = t;
         return Promise.all(results
         .map(({id:{videoId}}) =>
           checkVideoDuration(videoId)
@@ -156,12 +157,13 @@ const search = isFirstFetch =>{
       .then(results => results.filter(v => v))
       .then(videos => {
         if(fetchId === lastFetch) {
+          nextPageToken = _token;
           $history.css({display: "none"});
           renderSearchResult(videos, isFirstFetch);
           $searchResult.removeClass("loading");
         }
       })
-      .catch(() => {location.hash = ""; error()})
+      .catch(r => {location.hash = ""; error(r)})
   } else {
     nextPageToken = null;
     $history.css({display: ""});
@@ -178,7 +180,9 @@ $window.on("hashchange", () =>{
   }
 });
 
-$(".back").on("click", e =>{history.back();history.back()})
+$(".back").on("click", e =>{
+  history.go(-2);
+})
 
 $getShortenURL.on("submit", e => {
   location.hash = "";
@@ -242,7 +246,7 @@ $inputSearchQuery.on("focus", () => {
 $inputSearchQuery.on("input", () => search(true));
 
 $search.on("scroll", () =>{
-  if($search.scrollTop() >= $searchResult.height() - searchHeight - 70){
+  if($search.scrollTop() >= $searchResult.height() - searchHeight - 70 && nextPageToken){
     search(false);
   }
 });
@@ -258,6 +262,7 @@ $searchResult.on("click", ({target}) =>{
   .then(v =>{
     if(!v.roomId || !v.keepPeriod || new Date > v.keepPeriod) {
       location.hash = "init";
+      $("header *:not(p):not(#logo)").css({display: "none"});
     } else {
       $showRoomId.text(v.roomId);
       $submitForm[0].room_id.value = v.roomId;
@@ -265,7 +270,6 @@ $searchResult.on("click", ({target}) =>{
       (new Promise((res, rej) => chrome.tabs.query({active:true}, t =>{
         const match = t[0].url.match(/youtube.com\/.*[?&]v=([-\w]+)/);
         if (match) {
-          videoId = match[1]
           res(match[1])
         } else {
           rej(new Error("YouTube上で起動してください。"));
