@@ -178,8 +178,8 @@ header{
   opacity: 100;
 }
 
-#init:target ~ #logo{
-  width: calc(100% - 2em);
+#init:target ~ header{
+  display: none;
 }
 
 #loading{
