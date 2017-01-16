@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>MIYUKKI Direct</title>
-  <script src="./jquery-3.1.1.min.js"></script>
   <link rel="stylesheet" href="./popup.css">
   <template id="searchResultTemplete">
     <li class="flex-container match-parent">
@@ -18,7 +17,7 @@
 <body>
 <section id="init">
   <form action="" id="getShortenURL" class="flex-container flex-column full-parent">
-  <img class="match-parent" src="./djmiyukki-logo.png" alt="DJ MIYUKKI SYSTEM">
+  <img class="match-parent" src="./logo.png" alt="DJ MIYUKKI SYSTEM">
     <div class="stretch"></div>
     <p>
       <select id="selectUrlType" class="match-parent">
@@ -48,11 +47,11 @@
   </form>
 </section>
 
-<section id="post">
-  <img src="" class="match-parent" id="thumb">
-
+<section id="post" class="flex-container flex-column">
+  <iframe id="player" src="" frameborder="0"></iframe>
   <h2 id="videoTitle" class="ellipsis2"></h2>
-  <p id="videoDescription" class="ellipsis3"></p>
+  <p id="videoDescription" class="ellipsis6"></p>
+  <div class="stretch"></div>
   <p>
     を送信します。
     よろしいですか？
@@ -73,25 +72,27 @@
 <ul id="search-result" class="match-parent"></ul>
 </section>
 
-<section id="error">
+<section id="error" class="flex-container flex-column">
 エラーが発生しました。:
 <p id="error-result"></p>
+<div class="stretch"></div>
 <button class="back match-parent">戻る</button>
 </section>
 
-<section id="success">
+<section id="success" class="flex-container flex-column">
   <p>
     成功しました。
   </p>
   <p>
     動画が再生されるまでお楽しみに！
   </p>
+  <div class="stretch"></div>
   <button class="back match-parent">戻る</button>
 </section>
 
 <header>
   <p class="flex-container">
-    <img src="./djmiyukki-logo.png" alt="DJ MIYUKKI SYSTEM" id="logo">
+    <img src="./logo.png" alt="DJ MIYUKKI SYSTEM" id="logo">
     <button id="logout" class="stretch margin-button">LOGOUT</button>
   </p>
   <p>

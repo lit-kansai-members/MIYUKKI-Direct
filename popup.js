@@ -1,28 +1,31 @@
-const $window = $(window);
+"use strict"
 
-const $inputShortenURL = $("#inputShortenURL")[0];
-const $selectUrlType = $("#selectUrlType")[0]
-const $errorResult = $("#error-result");
-const $inputKeepPeriod = $("#inputKeepPeriod");
+const $ = selector => Array.from(document.querySelectorAll(selector));
+const $id = id => document.getElementById(id);
 
-const $showRoomId = $("#roomId");
-const $showKeepPeriod = $("#showKeepPeriod");
-const $getShortenURL  = $("#getShortenURL");
+const $inputShortenURL = $id("inputShortenURL");
+const $selectUrlType = $id("selectUrlType");
+const $errorResult = $id("error-result");
+const $inputKeepPeriod = $id("inputKeepPeriod");
 
-const $videoTitle = $("#videoTitle");
-const $videoDescription = $("#videoDescription");
-const $thumb = $("#thumb");
-const $submitForm = $("#submit");
+const $showRoomId = $id("roomId");
+const $showKeepPeriod = $id("showKeepPeriod");
+const $getShortenURL  = $id("getShortenURL");
 
-const $inputSearchQuery = $("#inputSearchQuery");
+const $videoTitle = $id("videoTitle");
+const $videoDescription = $id("videoDescription");
+const $player = $id("player");
+const $submitForm = $id("submit");
 
-const $search = $("#search");
-const $searchResult = $("#search-result")
-const $searchResultTemplete = $("#searchResultTemplete")[0];
-const searchHeight = $search.height();
+const $inputSearchQuery = $id("inputSearchQuery");
 
-const $removeHistory = $("#removeHistory");
-const $history = $("#history");
+const $search = $id("search");
+const $searchResult = $id("search-result")
+const $searchResultTemplete = $id("searchResultTemplete");
+const searchHeight = $search.offsetHeight;
+
+const $removeHistory = $id("removeHistory");
+const $history = $id("history");
 
 const error = e =>{
   console.error("something Error occured!", e)
@@ -36,15 +39,13 @@ let nextPageToken = "";
 let searchResults = [];
 let videoInfo = {};
 
-$("a").on("click", ({target:{href: url}}) => chrome.tabs.create({url}))
+$("a").forEach(e => e.addEventListener("click", ({target:{href: url}}) => chrome.tabs.create({url})))
 
 const getRoomId = url =>{
   return fetch(url, {redirect: "manual", mode: "no-cors"})
     .then(responise =>{
-      if(responise.type === "opaqueredirect"){
-        Promise.resolve();
-      } else {
-        Promise.reject(new Error(`Requested URL ${url} is not redirectable.`));
+      if(responise.type !== "opaqueredirect"){
+        throw new Error(`Requested URL ${url} is not redirectable.`);
       }
     })
     .then(() => new Promise((resolve, reject) =>
@@ -93,16 +94,16 @@ const checkVideoDuration = id =>
 
 const toPost = video => {
   videoInfo = video;
-  $thumb.attr("src", video.snippet.thumbnails.high.url);
-  $videoTitle.text(video.snippet.title);
-  $videoDescription.text(video.snippet.description)
-  $submitForm[0].id.value = video.id;
+  $player.src = `https://www.youtube.com/embed/${video.id}?color=white&fs=0&rel=0&showinfo=0`;
+  $videoTitle.innerText = video.snippet.title;
+  $videoDescription.innerText = video.snippet.description;
+  $submitForm.id.value = video.id;
   location.hash = "post";
 }
 
 const renderSearchResult = (videos, reset=true) =>{
   if(reset){
-    $searchResult.html("");
+    $searchResult.innerHTML = "";
     searchResults = [];
   }
   videos.forEach(video =>{
@@ -114,26 +115,26 @@ const renderSearchResult = (videos, reset=true) =>{
       .querySelector(".thumb").src = video.snippet.thumbnails.medium.url;
     $searchResultTemplete.content
       .querySelector("li").addEventListener("click", () => toPost(video));
-    $searchResult.append(
+    $searchResult.appendChild(
       document.importNode($searchResultTemplete.content, true));
   })
   searchResults = searchResults.concat(videos);
 }
 
-const search = () =>{
-  const {value} = $inputSearchQuery[0]
+const search = isFirstFetch =>{
+  const {value} = $inputSearchQuery
   let URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=20&q=${encodeURIComponent(value)}`;
-  if(lastFetchURL !== URL){nextPageToken = null};
-  const isFirstFetch = !nextPageToken;
+  if(isFirstFetch) nextPageToken = null;
   if(!nextPageToken && lastFetchURL === URL){
     return;
   }
   const fetchId = ++lastFetch;
+  let _token;
   lastFetchURL = URL;
   if(nextPageToken){
     URL = `${URL}&pageToken=${nextPageToken}`
   }
-  $searchResult.addClass("loading");
+  $searchResult.classList.add("loading");
   if(value){
     Promise.resolve()
       .then(() => new Promise(res => 
@@ -148,7 +149,7 @@ const search = () =>{
         }
       })
       .then(({nextPageToken: t, items: results}) =>{
-        nextPageToken = t;
+        _token = t;
         return Promise.all(results
         .map(({id:{videoId}}) =>
           checkVideoDuration(videoId)
@@ -157,47 +158,50 @@ const search = () =>{
       .then(results => results.filter(v => v))
       .then(videos => {
         if(fetchId === lastFetch) {
-          $history.css({display: "none"});
+          nextPageToken = _token;
+          $history.style.display = "none";
           renderSearchResult(videos, isFirstFetch);
-          $searchResult.removeClass("loading");
+          $searchResult.classList.remove("loading");
         }
       })
-      .catch(error)
+      .catch(r => {location.hash = ""; error(r)})
   } else {
     nextPageToken = null;
-    $history.css({display: ""});
+    $history.style.display = "";
     chrome.storage.sync.get("history",({history=[]}) =>{
       renderSearchResult(history);
-      $searchResult.removeClass("loading");
+      $searchResult.classList.remove("loading");
     });
   }
 }
 
-$window.on("hashchange", () =>{
-  if(location.hash === "#search" && !$inputSearchQuery.val()){
+window.addEventListener("hashchange", () =>{
+  if(location.hash === "#search" && !$inputSearchQuery.value){
     search();
   }
 });
 
-$(".back").on("click", e =>{history.back();history.back()})
+$(".back").forEach(e => e.addEventListener("click", e =>{
+  history.go(-2);
+}))
 
-$getShortenURL.on("submit", e => {
+$getShortenURL.addEventListener("submit", e => {
   location.hash = "";
   const {value: baseURL} = $selectUrlType;
   const {value: param} = $inputShortenURL;
   Promise.resolve()
     .then(() => baseURL === "direct" ? param : getRoomId(baseURL + param))
     .then( roomId => new Promise((resolve) => {
-      const val = $inputKeepPeriod.val();
+      const {value} = $inputKeepPeriod;
       let keepPeriod;
-      if ( 0 >= val ){
+      if ( 0 >= value ){
         keepPeriod = "Infinity";
       } else {
         const toDay = new Date;
         keepPeriod = (new Date(
           toDay.getFullYear(),
           toDay.getMonth(),
-          toDay.getDate() + ($inputKeepPeriod.val() - 0)
+          toDay.getDate() + (value - 0)
         )).getTime();
       }
 
@@ -206,14 +210,14 @@ $getShortenURL.on("submit", e => {
     }))
     .then(()=> location.reload())
     .catch(reason => error(reason))
-    $getShortenURL[0].reset();
-    return false;
+    $getShortenURL.reset();
+    e.preventDefault();
 });
 
-$submitForm.on("submit", ()=> {
+$submitForm.addEventListener("submit", e => {
   location.hash = "";
   fetch("https://dj.life-is-tech.com/api",
-    { method: "POST", body: new FormData($submitForm[0])})
+    { method: "POST", body: new FormData($submitForm)})
     .then(res => {
       if(res.ok){
         chrome.storage.sync.get("history", ({history = []}) =>{
@@ -226,29 +230,29 @@ $submitForm.on("submit", ()=> {
       }
     })
     .catch(reason => error(reason));
-  return false;
+  e.preventDefault();
 });
 
-$("#logout").on("click", () => 
+$id("logout").addEventListener("click", () => 
   chrome.storage.sync.remove(["roomId", "keepPeriod"], ()=> location.reload()));
 
-$removeHistory.on("click", ()=>
+$removeHistory.addEventListener("click", ()=>
   chrome.storage.sync.remove("history", () => location.reload()))
 
-$inputSearchQuery.on("focus", () => {
+$inputSearchQuery.addEventListener("focus", () => {
   location.hash = "search";
-  $inputSearchQuery[0].focus();
+  $inputSearchQuery.focus();
 });
 
-$inputSearchQuery.on("input", search);
+$inputSearchQuery.addEventListener("input", () => search(true));
 
-$search.on("scroll", () =>{
-  if($search.scrollTop() >= $searchResult.height() - searchHeight - 70){
-    search();
+$search.addEventListener("scroll", () =>{
+  if($search.scrollTop >= $searchResult.offsetHeight - searchHeight - 70 && nextPageToken){
+    search(false);
   }
 });
 
-$searchResult.on("click", ({target}) =>{
+$searchResult.addEventListener("click", ({target}) =>{
   const clicked = searchResults[
     Array.from(document.querySelectorAll("#search-result li"))
     .findIndex(el => el.contains(target))]
@@ -256,17 +260,17 @@ $searchResult.on("click", ({target}) =>{
 });
 
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
-  .then(v =>{
-    if(!v.roomId || !v.keepPeriod || new Date > v.keepPeriod) {
+  .then(({roomId, keepPeriod}) =>{
+    if(!roomId || !keepPeriod || new Date > keepPeriod) {
       location.hash = "init";
+      $("header *:not(p):not(#logo)").forEach(e => e.style.display = "none")
     } else {
-      $showRoomId.text(v.roomId);
-      $submitForm[0].room_id.value = v.roomId;
-      $showKeepPeriod.text(Math.floor((v.keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1));
+      $showRoomId.innerText = roomId;
+      $submitForm.room_id.value = roomId;
+      $showKeepPeriod.innerText = Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1);
       (new Promise((res, rej) => chrome.tabs.query({active:true}, t =>{
         const match = t[0].url.match(/youtube.com\/.*[?&]v=([-\w]+)/);
         if (match) {
-          videoId = match[1]
           res(match[1])
         } else {
           rej(new Error("YouTube上で起動してください。"));
@@ -276,6 +280,4 @@ $searchResult.on("click", ({target}) =>{
         .then(toPost)
         .catch(() => location.hash = "search")
     }
-
-    $window.trigger("hashchange");
   })
