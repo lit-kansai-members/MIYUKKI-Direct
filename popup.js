@@ -110,6 +110,7 @@ const renderSearchResult = (videos, reset=true) =>{
     $searchResult.innerHTML = "";
     searchResults = [];
   }
+  const frag = document.createDocumentFragment();
   videos.forEach(video =>{
     $searchResultTemplete.content
       .querySelector(".title").innerText = video.snippet.title;
@@ -119,9 +120,10 @@ const renderSearchResult = (videos, reset=true) =>{
       .querySelector(".thumb").src = video.snippet.thumbnails.medium.url;
     $searchResultTemplete.content
       .querySelector("li").addEventListener("click", () => toPost(video));
-    $searchResult.appendChild(
+    frag.appendChild(
       document.importNode($searchResultTemplete.content, true));
   })
+  $searchResult.appendChild(frag);
   searchResults = searchResults.concat(videos);
 }
 
