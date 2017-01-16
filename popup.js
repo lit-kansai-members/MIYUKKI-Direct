@@ -18,6 +18,7 @@ const $player = $id("player");
 const $submitForm = $id("submit");
 
 const $inputSearchQuery = $id("inputSearchQuery");
+const $autocompletes = $id("autocompletes");
 
 const $search = $id("search");
 const $searchResult = $id("search-result")
@@ -38,6 +39,9 @@ let lastFetchURL = "";
 let nextPageToken = "";
 let searchResults = [];
 let videoInfo = {};
+let completeList = [];
+let focused = 0;
+let lastKey = 0;
 
 $("a").forEach(e => e.addEventListener("click", ({target:{href: url}}) => chrome.tabs.create({url})))
 
@@ -106,6 +110,7 @@ const renderSearchResult = (videos, reset=true) =>{
     $searchResult.innerHTML = "";
     searchResults = [];
   }
+  const frag = document.createDocumentFragment();
   videos.forEach(video =>{
     $searchResultTemplete.content
       .querySelector(".title").innerText = video.snippet.title;
@@ -115,9 +120,10 @@ const renderSearchResult = (videos, reset=true) =>{
       .querySelector(".thumb").src = video.snippet.thumbnails.medium.url;
     $searchResultTemplete.content
       .querySelector("li").addEventListener("click", () => toPost(video));
-    $searchResult.appendChild(
+    frag.appendChild(
       document.importNode($searchResultTemplete.content, true));
   })
+  $searchResult.appendChild(frag);
   searchResults = searchResults.concat(videos);
 }
 
@@ -244,7 +250,67 @@ $inputSearchQuery.addEventListener("focus", () => {
   $inputSearchQuery.focus();
 });
 
-$inputSearchQuery.addEventListener("input", () => search(true));
+$inputSearchQuery.addEventListener("input", () =>{
+  $autocompletes.innerHTML = "";
+  completeList = [];
+  if($inputSearchQuery.value)
+    fetch("http://suggestqueries.google.com/complete/search?client=firefox&hl=ja&ds=yt&q="
+    + encodeURIComponent($inputSearchQuery.value))
+    .then(res => res.ok && res.json())
+    .then(([input, result]) => {
+      if(input === $inputSearchQuery.value){
+        const frag = document.createDocumentFragment();
+        result.forEach(value =>{
+          const element = document.createElement("li");
+          element.classList.add("elipsis");
+          element.innerText = value;
+          frag.appendChild(element);
+        })
+        $autocompletes.innerHTML = "";
+        completeList = [];
+        $autocompletes.appendChild(frag);
+        completeList = result.map((value, i) =>
+          ({value, element: $autocompletes.childNodes[i]}))
+        focused = 0;
+        if(completeList.length)
+          completeList[0].element.classList.add("focused");
+      }
+    })
+  search(true);
+});
+
+$inputSearchQuery.addEventListener("keydown", e => {
+  if(!completeList.length) return;
+  completeList[focused].element.classList.remove("focused");
+
+  if (e.keyCode === 38 || (e.keyCode === 9 && e.shiftKey)){
+    if(--focused < 0) focused = completeList.length - 1;
+  } else if(e.keyCode === 40 || (e.keyCode === 9 && !e.shiftKey)){
+    if(++focused > completeList.length - 1) focused = 0;
+  } else if(e.keyCode === 13){
+    $autocompletes.innerHTML = "";
+    completeList = [];
+    focused = 0;
+    return;
+  } else {
+    return;
+  }
+
+  const {value, element} = completeList[focused];
+  $inputSearchQuery.value = value;
+  element.classList.add("focused");
+  search(true);
+
+  const {offsetHeight: itemHeight, offsetTop} = element;
+  const {offsetHeight: height, scrollTop} = $autocompletes;
+  if(scrollTop > offsetTop){
+    $autocompletes.scrollTop = offsetTop;
+  } else if(scrollTop + height < offsetTop + itemHeight){
+    $autocompletes.scrollTop = offsetTop + itemHeight - height;
+  }
+
+  e.preventDefault();
+})
 
 $search.addEventListener("scroll", () =>{
   if($search.scrollTop >= $searchResult.offsetHeight - searchHeight - 70 && nextPageToken){
