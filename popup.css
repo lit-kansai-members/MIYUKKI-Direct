@@ -153,6 +153,10 @@ h1, h2, h3, h4, h5{
   height: 10rem;
 }
 
+.position-relative{
+  position: relative;
+}
+
 p{
   line-height: 2;
 }
