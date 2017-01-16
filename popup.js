@@ -120,11 +120,10 @@ const renderSearchResult = (videos, reset=true) =>{
   searchResults = searchResults.concat(videos);
 }
 
-const search = () =>{
+const search = isFirstFetch =>{
   const {value} = $inputSearchQuery[0]
   let URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=20&q=${encodeURIComponent(value)}`;
-  if(lastFetchURL !== URL){nextPageToken = null};
-  const isFirstFetch = !nextPageToken;
+  if(isFirstFetch) nextPageToken = null;
   if(!nextPageToken && lastFetchURL === URL){
     return;
   }
@@ -162,7 +161,7 @@ const search = () =>{
           $searchResult.removeClass("loading");
         }
       })
-      .catch(error)
+      .catch(() => {location.hash = ""; error()})
   } else {
     nextPageToken = null;
     $history.css({display: ""});
@@ -240,11 +239,11 @@ $inputSearchQuery.on("focus", () => {
   $inputSearchQuery[0].focus();
 });
 
-$inputSearchQuery.on("input", search);
+$inputSearchQuery.on("input", () => search(true));
 
 $search.on("scroll", () =>{
   if($search.scrollTop() >= $searchResult.height() - searchHeight - 70){
-    search();
+    search(false);
   }
 });
 
