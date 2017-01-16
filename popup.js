@@ -260,6 +260,7 @@ $searchResult.on("click", ({target}) =>{
   .then(v =>{
     if(!v.roomId || !v.keepPeriod || new Date > v.keepPeriod) {
       location.hash = "init";
+      $("header *:not(p):not(#logo)").css({display: "none"});
     } else {
       $showRoomId.text(v.roomId);
       $submitForm[0].room_id.value = v.roomId;
