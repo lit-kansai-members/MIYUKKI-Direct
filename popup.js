@@ -43,7 +43,7 @@ let completeList = [];
 let focused = 0;
 let isFirstKeydown = true;
 
-$("a").forEach(e => e.addEventListener("click", ({target:{href: url}}) => chrome.tabs.create({url})))
+$("a:not(#tweet)").forEach(e => e.addEventListener("click", ({target:{href: url}}) => chrome.tabs.create({url})))
 
 const getRoomId = url =>{
   return fetch(url, {redirect: "manual", mode: "no-cors"})
@@ -374,6 +374,19 @@ $searchResult.addEventListener("click", ({target}) =>{
     Array.from(document.querySelectorAll("#search-result li"))
     .findIndex(el => el.contains(target))]
   if(clicked) toPost(clicked);
+});
+
+$id("tweet").addEventListener("click", e => {
+  chrome.windows.create({
+    url: `https://twitter.com/intent/tweet?url=${
+      encodeURIComponent("http://youtu.be/" + videoInfo.id)
+    }&text=${
+      encodeURIComponent(`DJ MIYUKKI SYSTEM に ${videoInfo.snippet.title}を投稿しました`)
+    }&hashtags=${encodeURIComponent(`#DJMIYUKKI_${$submitForm.room_id.value}`)}`,
+    type: "popup"
+  });
+  e.preventDefault();
+  e.stopPropagation();
 });
 
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
