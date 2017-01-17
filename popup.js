@@ -331,6 +331,7 @@ $inputSearchQuery.addEventListener("keydown", e => {
     } else if(e.keyCode === 40 || (e.keyCode === 9 && !e.shiftKey)){
       if(++focused > completeList.length - 1) focused = 0;
     } else if(e.keyCode === 13){
+      $inputSearchQuery.value = completeList[focused].value;
       $autocompletes.innerHTML = "";
       completeList = [];
       focused = 0;
