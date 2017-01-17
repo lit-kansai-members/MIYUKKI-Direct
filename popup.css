@@ -266,15 +266,16 @@ header{
 
 #search-result li{
   height: 7em;
-  margin: 0;
   padding: 0;
+  margin: 0;
   overflow: hidden;
   cursor: pointer;
 }
 
-#search-result li:hover {
+#search-result li:hover,
+#search-result li.focused {
   transform: scale(.9);
-  filter: brightness(.7);
+  opacity: .5;
 }
 
 #search-result .thumb{
