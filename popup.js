@@ -166,7 +166,7 @@ const search = isFirstFetch =>{
       .then(videos => {
         if(fetchId === lastFetch) {
           nextPageToken = _token;
-          $history.style.display = "none";
+          $history.classList.add("hidden");
           renderSearchResult(videos, isFirstFetch);
           $searchResult.classList.remove("loading");
         }
@@ -174,7 +174,7 @@ const search = isFirstFetch =>{
       .catch(r => {location.hash = ""; error(r)})
   } else {
     nextPageToken = null;
-    $history.style.display = "";
+    $history.classList.remove("hidden");
     chrome.storage.sync.get("history",({history=[]}) =>{
       renderSearchResult(history);
       $searchResult.classList.remove("loading");
