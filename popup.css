@@ -296,3 +296,12 @@ header{
 #history.hidden{
   opacity: 0;
 }
+
+#tweet{
+ font-weight: bold;
+}
+
+#tweet svg{
+  height: 1em;
+  width: 1em;
+}
