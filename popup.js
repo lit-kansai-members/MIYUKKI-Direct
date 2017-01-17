@@ -183,8 +183,22 @@ const search = isFirstFetch =>{
 }
 
 window.addEventListener("hashchange", () =>{
-  if(location.hash === "#search" && !$inputSearchQuery.value){
+  const {hash} = location;
+  if(hash === "#search" && !$inputSearchQuery.value){
     search();
+  }
+  if(hash === "#search"){
+    $inputSearchQuery.focus();
+  } else if(hash !== "#" || hash !== ""){
+    const target = document.querySelector(`${hash} .autofocus`);
+    if(target) target.focus();
+  }
+});
+
+document.addEventListener("keyup", e =>{
+  if(e.keyCode === 83 && document.activeElement.tagName !== "INPUT"
+      && getComputedStyle($inputSearchQuery).display !== "none"){
+    location.hash = "search";
   }
 });
 
@@ -281,33 +295,63 @@ $inputSearchQuery.addEventListener("input", () =>{
 });
 
 $inputSearchQuery.addEventListener("keydown", e => {
-  if(!completeList.length) return;
-  completeList[focused].element.classList.remove("focused");
+  if(!completeList.length){
+    const children = Array.from($searchResult.childNodes)
+      .filter(v => v.tagName && v.tagName === "LI");
+    if(!children.length) return;
+    children[focused] && children[focused].classList.remove("focused");
 
-  if (e.keyCode === 38 || (e.keyCode === 9 && e.shiftKey)){
-    if(--focused < 0) focused = completeList.length - 1;
-  } else if(e.keyCode === 40 || (e.keyCode === 9 && !e.shiftKey)){
-    if(++focused > completeList.length - 1) focused = 0;
-  } else if(e.keyCode === 13){
-    $autocompletes.innerHTML = "";
-    completeList = [];
-    focused = 0;
-    return;
-  } else {
-    return;
-  }
+    if (e.keyCode === 38 || (e.keyCode === 9 && e.shiftKey)){
+      if(--focused < 0) focused = 0;
+    } else if(e.keyCode === 40 || (e.keyCode === 9 && !e.shiftKey)){
+      if(isFirstKeydown || ++focused > searchResults.length - 1) focused = 0;
+    } else if(e.keyCode === 13){
+      isFirstKeydown = true;
+      toPost(searchResults[focused]);
+      focused = 0;
+      return;
+    } else {
+      return;
+    }
 
-  const {value, element} = completeList[focused];
-  $inputSearchQuery.value = value;
-  element.classList.add("focused");
-  search(true);
+    isFirstKeydown = false;
+    const {offsetHeight: itemHeight, offsetTop} = children[focused];
+    const {offsetHeight: height, scrollTop} = $searchResult;
+    if(scrollTop > offsetTop){
+      $searchResult.scrollTop = offsetTop;
+    } else if(scrollTop + height < offsetTop + itemHeight){
+      $searchResult.scrollTop = offsetTop + itemHeight - height;
+    }
+    if(focused > searchResults.length - 4 || nextPageToken) search(false);
+    children[focused].classList.add("focused");
+  }else{
+    completeList[focused].element.classList.remove("focused");
 
-  const {offsetHeight: itemHeight, offsetTop} = element;
-  const {offsetHeight: height, scrollTop} = $autocompletes;
-  if(scrollTop > offsetTop){
-    $autocompletes.scrollTop = offsetTop;
-  } else if(scrollTop + height < offsetTop + itemHeight){
-    $autocompletes.scrollTop = offsetTop + itemHeight - height;
+    if (e.keyCode === 38 || (e.keyCode === 9 && e.shiftKey)){
+      if(--focused < 0) focused = completeList.length - 1;
+    } else if(e.keyCode === 40 || (e.keyCode === 9 && !e.shiftKey)){
+      if(++focused > completeList.length - 1) focused = 0;
+    } else if(e.keyCode === 13){
+      $autocompletes.innerHTML = "";
+      completeList = [];
+      focused = 0;
+      return;
+    } else {
+      return;
+    }
+
+    const {value, element} = completeList[focused];
+    $inputSearchQuery.value = value;
+    element.classList.add("focused");
+    search(true);
+
+    const {offsetHeight: itemHeight, offsetTop} = element;
+    const {offsetHeight: height, scrollTop} = $autocompletes;
+    if(scrollTop > offsetTop){
+      $autocompletes.scrollTop = offsetTop;
+    } else if(scrollTop + height < offsetTop + itemHeight){
+      $autocompletes.scrollTop = offsetTop + itemHeight - height;
+    }
   }
 
   e.preventDefault();
