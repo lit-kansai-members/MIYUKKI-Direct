@@ -309,7 +309,11 @@ $inputSearchQuery.addEventListener("keydown", e => {
     if (e.keyCode === 38 || (e.keyCode === 9 && e.shiftKey)){
       if(--focused < 0) focused = 0;
     } else if(e.keyCode === 40 || (e.keyCode === 9 && !e.shiftKey)){
-      if(isFirstKeydown || ++focused > searchResults.length - 1) focused = 0;
+      if(isFirstKeydown){
+        focused = 0;
+      } else if(++focused > searchResults.length - 1){
+        focused = nextPageToken ? searchResults.length - 1 : 0;
+      }
     } else if(e.keyCode === 13){
       isFirstKeydown = true;
       toPost(searchResults[focused]);
