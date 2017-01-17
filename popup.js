@@ -41,7 +41,7 @@ let searchResults = [];
 let videoInfo = {};
 let completeList = [];
 let focused = 0;
-let lastKey = 0;
+let isFirstKeydown = true;
 
 $("a").forEach(e => e.addEventListener("click", ({target:{href: url}}) => chrome.tabs.create({url})))
 
@@ -109,6 +109,7 @@ const renderSearchResult = (videos, reset=true) =>{
   if(reset){
     $searchResult.innerHTML = "";
     searchResults = [];
+    isFirstKeydown = true;
   }
   const frag = document.createDocumentFragment();
   videos.forEach(video =>{
