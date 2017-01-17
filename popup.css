@@ -78,13 +78,17 @@ button, select{
   cursor: pointer;
 }
 
-button:hover{
+button:hover, button:focus{
   background: #fff;
-  color: #00A3ED;
+  color: #00a3ed;
 }
 
 input[type="number"]{
   width: 3em;
+}
+
+:focus{
+  outline: #44f solid 1px;
 }
 
 ul{
@@ -232,9 +236,16 @@ header{
 }
 
 #search-result{
-  padding: 0;
+  padding: 4rem 0 0 0;
   margin: 0;
   font-size: .7em;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+}
+
+#history.hidden + #search-result{
+  padding: 0;
 }
 
 #search-result:after{
@@ -255,15 +266,16 @@ header{
 
 #search-result li{
   height: 7em;
-  margin: 0;
   padding: 0;
+  margin: 0;
   overflow: hidden;
   cursor: pointer;
 }
 
-#search-result li:hover {
+#search-result li:hover,
+#search-result li.focused {
   transform: scale(.9);
-  filter: brightness(.7);
+  opacity: .5;
 }
 
 #search-result .thumb{
@@ -271,10 +283,16 @@ header{
 }
 
 #history{
+  position: absolute;
+  width: 90%;
   margin: 1em 0;
 }
 
 #history span{
   line-height: 2.5;
   margin: 0 1em;
+}
+
+#history.hidden{
+  opacity: 0;
 }

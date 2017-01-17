@@ -31,7 +31,7 @@ const $history = $id("history");
 const error = e =>{
   console.error("something Error occured!", e)
   location.hash = "error"
-  $errorResult.text(e);
+  $errorResult.innerText = e;
 }
 
 let lastFetch = 0;
@@ -41,7 +41,7 @@ let searchResults = [];
 let videoInfo = {};
 let completeList = [];
 let focused = 0;
-let lastKey = 0;
+let isFirstKeydown = true;
 
 $("a").forEach(e => e.addEventListener("click", ({target:{href: url}}) => chrome.tabs.create({url})))
 
@@ -109,6 +109,7 @@ const renderSearchResult = (videos, reset=true) =>{
   if(reset){
     $searchResult.innerHTML = "";
     searchResults = [];
+    isFirstKeydown = true;
   }
   const frag = document.createDocumentFragment();
   videos.forEach(video =>{
@@ -165,7 +166,7 @@ const search = isFirstFetch =>{
       .then(videos => {
         if(fetchId === lastFetch) {
           nextPageToken = _token;
-          $history.style.display = "none";
+          $history.classList.add("hidden");
           renderSearchResult(videos, isFirstFetch);
           $searchResult.classList.remove("loading");
         }
@@ -173,7 +174,7 @@ const search = isFirstFetch =>{
       .catch(r => {location.hash = ""; error(r)})
   } else {
     nextPageToken = null;
-    $history.style.display = "";
+    $history.classList.remove("hidden");
     chrome.storage.sync.get("history",({history=[]}) =>{
       renderSearchResult(history);
       $searchResult.classList.remove("loading");
@@ -182,8 +183,22 @@ const search = isFirstFetch =>{
 }
 
 window.addEventListener("hashchange", () =>{
-  if(location.hash === "#search" && !$inputSearchQuery.value){
+  const {hash} = location;
+  if(hash === "#search" && !$inputSearchQuery.value){
     search();
+  }
+  if(hash === "#search"){
+    $inputSearchQuery.focus();
+  } else if(hash !== "#" || hash !== ""){
+    const target = document.querySelector(`${hash} .autofocus`);
+    if(target) target.focus();
+  }
+});
+
+document.addEventListener("keyup", e =>{
+  if(e.keyCode === 83 && document.activeElement.tagName !== "INPUT"
+      && getComputedStyle($inputSearchQuery).display !== "none"){
+    location.hash = "search";
   }
 });
 
@@ -247,7 +262,6 @@ $removeHistory.addEventListener("click", ()=>
 
 $inputSearchQuery.addEventListener("focus", () => {
   location.hash = "search";
-  $inputSearchQuery.focus();
 });
 
 $inputSearchQuery.addEventListener("input", () =>{
@@ -280,33 +294,63 @@ $inputSearchQuery.addEventListener("input", () =>{
 });
 
 $inputSearchQuery.addEventListener("keydown", e => {
-  if(!completeList.length) return;
-  completeList[focused].element.classList.remove("focused");
+  if(!completeList.length){
+    const children = Array.from($searchResult.childNodes)
+      .filter(v => v.tagName && v.tagName === "LI");
+    if(!children.length) return;
+    children[focused] && children[focused].classList.remove("focused");
 
-  if (e.keyCode === 38 || (e.keyCode === 9 && e.shiftKey)){
-    if(--focused < 0) focused = completeList.length - 1;
-  } else if(e.keyCode === 40 || (e.keyCode === 9 && !e.shiftKey)){
-    if(++focused > completeList.length - 1) focused = 0;
-  } else if(e.keyCode === 13){
-    $autocompletes.innerHTML = "";
-    completeList = [];
-    focused = 0;
-    return;
-  } else {
-    return;
-  }
+    if (e.keyCode === 38 || (e.keyCode === 9 && e.shiftKey)){
+      if(--focused < 0) focused = 0;
+    } else if(e.keyCode === 40 || (e.keyCode === 9 && !e.shiftKey)){
+      if(isFirstKeydown || ++focused > searchResults.length - 1) focused = 0;
+    } else if(e.keyCode === 13){
+      isFirstKeydown = true;
+      toPost(searchResults[focused]);
+      focused = 0;
+      return;
+    } else {
+      return;
+    }
 
-  const {value, element} = completeList[focused];
-  $inputSearchQuery.value = value;
-  element.classList.add("focused");
-  search(true);
+    isFirstKeydown = false;
+    const {offsetHeight: itemHeight, offsetTop} = children[focused];
+    const {offsetHeight: height, scrollTop} = $searchResult;
+    if(scrollTop > offsetTop){
+      $searchResult.scrollTop = offsetTop;
+    } else if(scrollTop + height < offsetTop + itemHeight){
+      $searchResult.scrollTop = offsetTop + itemHeight - height;
+    }
+    if(focused > searchResults.length - 4 || nextPageToken) search(false);
+    children[focused].classList.add("focused");
+  }else{
+    completeList[focused].element.classList.remove("focused");
 
-  const {offsetHeight: itemHeight, offsetTop} = element;
-  const {offsetHeight: height, scrollTop} = $autocompletes;
-  if(scrollTop > offsetTop){
-    $autocompletes.scrollTop = offsetTop;
-  } else if(scrollTop + height < offsetTop + itemHeight){
-    $autocompletes.scrollTop = offsetTop + itemHeight - height;
+    if (e.keyCode === 38 || (e.keyCode === 9 && e.shiftKey)){
+      if(--focused < 0) focused = completeList.length - 1;
+    } else if(e.keyCode === 40 || (e.keyCode === 9 && !e.shiftKey)){
+      if(++focused > completeList.length - 1) focused = 0;
+    } else if(e.keyCode === 13){
+      $autocompletes.innerHTML = "";
+      completeList = [];
+      focused = 0;
+      return;
+    } else {
+      return;
+    }
+
+    const {value, element} = completeList[focused];
+    $inputSearchQuery.value = value;
+    element.classList.add("focused");
+    search(true);
+
+    const {offsetHeight: itemHeight, offsetTop} = element;
+    const {offsetHeight: height, scrollTop} = $autocompletes;
+    if(scrollTop > offsetTop){
+      $autocompletes.scrollTop = offsetTop;
+    } else if(scrollTop + height < offsetTop + itemHeight){
+      $autocompletes.scrollTop = offsetTop + itemHeight - height;
+    }
   }
 
   e.preventDefault();
