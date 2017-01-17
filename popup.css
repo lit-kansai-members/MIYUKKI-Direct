@@ -80,11 +80,15 @@ button, select{
 
 button:hover, button:focus{
   background: #fff;
-  color: #00A3ED;
+  color: #00a3ed;
 }
 
 input[type="number"]{
   width: 3em;
+}
+
+:focus{
+  outline: #44f solid 1px;
 }
 
 ul{
