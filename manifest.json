@@ -28,5 +28,15 @@
     "scopes": [
     "https://www.googleapis.com/auth/youtube.readonly"
     ]
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "windows": "Alt+Shift+M",
+        "linux": "Alt+Shift+M",
+        "mac": "Alt+Shift+M",
+        "chromeos": "Alt+Shift+M"
+      }
+    }
   }
 }
