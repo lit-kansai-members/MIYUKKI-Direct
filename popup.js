@@ -237,20 +237,27 @@ $getShortenURL.addEventListener("submit", e => {
 
 $submitForm.addEventListener("submit", e => {
   location.hash = "";
-  fetch("https://dj.life-is-tech.com/api",
-    { method: "POST", body: new FormData($submitForm)})
-    .then(res => {
-      if(res.ok){
-        chrome.storage.sync.get("history", ({history = []}) =>{
-          history.push(videoInfo);
-          chrome.storage.sync.set({history});
-        });
-        location.hash = "success";
-      } else {
-        error(res.status + res.statusText);
-      }
-    })
-    .catch(reason => error(reason));
+  chrome.storage.sync.get("lastPost", ({lastPost=0}) => {
+    if(new Date - lastPost < 1000 * 60 * 5){
+      error("一回投稿したら最低五分間は間を空けて投稿してください。");
+    } else {
+      fetch("https://dj.life-is-tech.com/api",
+        { method: "POST", body: new FormData($submitForm)})
+        .then(res => {
+          if(res.ok){
+            const {id, snippet:{title, description, thumbnails:{medium:{url}}}} = videoInfo;
+            chrome.storage.sync.get("history", ({history = []}) =>{
+              history.push({id, snippet:{title, description, thumbnails:{medium:{url}}}});
+              chrome.storage.sync.set({history, lastPost: (new Date).getTime()}, () =>
+                location.hash = "success" );
+            });
+          } else {
+            error(res.status + res.statusText);
+          }
+        })
+        .catch(reason => error(reason));
+    }
+  })
   e.preventDefault();
 });
 
@@ -303,7 +310,11 @@ $inputSearchQuery.addEventListener("keydown", e => {
     if (e.keyCode === 38 || (e.keyCode === 9 && e.shiftKey)){
       if(--focused < 0) focused = 0;
     } else if(e.keyCode === 40 || (e.keyCode === 9 && !e.shiftKey)){
-      if(isFirstKeydown || ++focused > searchResults.length - 1) focused = 0;
+      if(isFirstKeydown){
+        focused = 0;
+      } else if(++focused > searchResults.length - 1){
+        focused = nextPageToken ? searchResults.length - 1 : 0;
+      }
     } else if(e.keyCode === 13){
       isFirstKeydown = true;
       toPost(searchResults[focused]);
@@ -321,7 +332,7 @@ $inputSearchQuery.addEventListener("keydown", e => {
     } else if(scrollTop + height < offsetTop + itemHeight){
       $searchResult.scrollTop = offsetTop + itemHeight - height;
     }
-    if(focused > searchResults.length - 4 || nextPageToken) search(false);
+    if(focused > searchResults.length - 4 && nextPageToken) search(false);
     children[focused].classList.add("focused");
   }else{
     completeList[focused].element.classList.remove("focused");
@@ -382,12 +393,14 @@ $id("tweet").addEventListener("click", e => {
       encodeURIComponent("http://youtu.be/" + videoInfo.id)
     }&text=${
       encodeURIComponent(`DJ MIYUKKI SYSTEM に ${videoInfo.snippet.title}を投稿しました`)
-    }&hashtags=${encodeURIComponent(`#DJMIYUKKI_${$submitForm.room_id.value}`)}`,
+    }&hashtags=${encodeURIComponent(`DJMIYUKKI_${$submitForm.room_id.value},lifeistech`)}`,
     type: "popup"
   });
   e.preventDefault();
   e.stopPropagation();
 });
+
+location.hash = "";
 
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
   .then(({roomId, keepPeriod}) =>{
