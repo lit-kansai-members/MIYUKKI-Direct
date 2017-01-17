@@ -96,10 +96,6 @@ ul{
   margin: 1em 0;
 }
 
-h1, h2, h3, h4, h5{
-  margin: 0;
-}
-
 .match-parent{
   width: 100%;
 }
@@ -125,7 +121,7 @@ h1, h2, h3, h4, h5{
   flex-wrap: nowrap;
 }
 
-.ellipsis, .ellipsis2, .ellipsis6{
+.ellipsis, .ellipsis2, .ellipsis10{
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -140,8 +136,8 @@ h1, h2, h3, h4, h5{
   -webkit-line-clamp: 2;
 }
 
-.ellipsis6{
-  -webkit-line-clamp: 6;
+.ellipsis10{
+  -webkit-line-clamp: 10;
 }
 
 .stretch{
@@ -159,10 +155,6 @@ h1, h2, h3, h4, h5{
 
 .position-relative{
   position: relative;
-}
-
-p{
-  line-height: 2;
 }
 
 .margin-button{
