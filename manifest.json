@@ -1,17 +1,17 @@
 {
 	"manifest_version": 2,
 	"name": "MIYUKKI Direct",
-	"version": "1.2.2",
+	"version": "1.3.0",
 	"description": "A DJ MIYUKKI SYSTEM client .",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzJ/fLU6NmR75JJfPQZVQqDYO6HNPh9D1mqnv9Mn5qy7Z7WnG7UeRFPxTEREFoSPVuQDUbrgPuE+06eTGz6zNg64ubA7Z9NItx7ubDi2ExVkkPxsSx+3zNVBZB8Qri4lkGTavw+b9YegF2YfgISYtx1s3PjWRWVQLATo+zbMsM+QSdEvJ8sgre2oNYCKykUBAyziaaqdIGtMqaNQCS8iDlnh6ng+NTVSQli1XAsKC4/c9xemR+pdas1cOsfUEGonMgPB70Ta0Q7iXaHfVyc5qkNholgKi9KQ1IF05twZQMxHukyqknnnsX7QTrugf4ZzK3JoJgalM/cYmR/ZgHwnm4wIDAQAB",
 	"icons": {
-		"16": "icon16.png",
-		"48": "icon48.png",
+		"16": "icons/16.png",
+		"48": "icons/48.png",
 		"128": "icon128.png"
 	},
 	"browser_action": {
 		"default_icon": {
-			"19": "icon19.png"
+			"19": "icons/19.png"
 		},
 		"default_title": "MIYUKKI Direct",
 		"default_popup": "popup.html"
