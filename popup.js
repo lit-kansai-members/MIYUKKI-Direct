@@ -237,20 +237,26 @@ $getShortenURL.addEventListener("submit", e => {
 
 $submitForm.addEventListener("submit", e => {
   location.hash = "";
-  fetch("https://dj.life-is-tech.com/api",
-    { method: "POST", body: new FormData($submitForm)})
-    .then(res => {
-      if(res.ok){
-        chrome.storage.sync.get("history", ({history = []}) =>{
-          history.push(videoInfo);
-          chrome.storage.sync.set({history});
-        });
-        location.hash = "success";
-      } else {
-        error(res.status + res.statusText);
-      }
-    })
-    .catch(reason => error(reason));
+  chrome.storage.sync.get("lastPost", ({lastPost=0}) => {
+    if(new Date - lastPost < 1000 * 60 * 5){
+      error("一回投稿したら最低五分間は間を空けて投稿してください。");
+    } else {
+      fetch("https://dj.life-is-tech.com/api",
+        { method: "POST", body: new FormData($submitForm)})
+        .then(res => {
+          if(res.ok){
+            chrome.storage.sync.get("history", ({history = []}) =>{
+              history.push(videoInfo);
+              chrome.storage.sync.set({history, lastPost: (new Date).getTime()}, () =>
+                location.hash = "success" );
+            });
+          } else {
+            error(res.status + res.statusText);
+          }
+        })
+        .catch(reason => error(reason));
+    }
+  })
   e.preventDefault();
 });
 
