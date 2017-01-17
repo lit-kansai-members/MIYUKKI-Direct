@@ -283,10 +283,16 @@ header{
 }
 
 #history{
+  position: absolute;
+  width: 90%;
   margin: 1em 0;
 }
 
 #history span{
   line-height: 2.5;
   margin: 0 1em;
+}
+
+#history.hidden{
+  opacity: 0;
 }
