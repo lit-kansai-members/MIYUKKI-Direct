@@ -331,7 +331,7 @@ $inputSearchQuery.addEventListener("keydown", e => {
     } else if(scrollTop + height < offsetTop + itemHeight){
       $searchResult.scrollTop = offsetTop + itemHeight - height;
     }
-    if(focused > searchResults.length - 4 || nextPageToken) search(false);
+    if(focused > searchResults.length - 4 && nextPageToken) search(false);
     children[focused].classList.add("focused");
   }else{
     completeList[focused].element.classList.remove("focused");
