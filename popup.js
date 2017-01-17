@@ -31,7 +31,7 @@ const $history = $id("history");
 const error = e =>{
   console.error("something Error occured!", e)
   location.hash = "error"
-  $errorResult.text(e);
+  $errorResult.innerText = e;
 }
 
 let lastFetch = 0;
