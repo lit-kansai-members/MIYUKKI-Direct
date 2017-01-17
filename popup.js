@@ -357,6 +357,12 @@ $inputSearchQuery.addEventListener("keydown", e => {
   e.preventDefault();
 })
 
+$inputSearchQuery.addEventListener("blur", () =>{
+  $autocompletes.innerHTML = "";
+  completeList = [];
+  focused = 0;
+})
+
 $search.addEventListener("scroll", () =>{
   if($search.scrollTop >= $searchResult.offsetHeight - searchHeight - 70 && nextPageToken){
     search(false);
