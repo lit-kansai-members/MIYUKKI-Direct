@@ -262,7 +262,6 @@ $removeHistory.addEventListener("click", ()=>
 
 $inputSearchQuery.addEventListener("focus", () => {
   location.hash = "search";
-  $inputSearchQuery.focus();
 });
 
 $inputSearchQuery.addEventListener("input", () =>{
