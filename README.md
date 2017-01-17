@@ -27,10 +27,10 @@
 ## 使い方
 ブラウザ右上のツールバーにある「DJ」と書かれたアイコンをクリックするか、<kbd><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd></kbd>でポップアップが表示されます。
 
-![show popup](./usage-1.png)
+![show popup](./readme/1.png)
 
 ### 初期設定画面
-![inital setting](./usage-2.png)
+![inital setting](./readme/2.png)
 
 初回起動時または保存期間が過ぎると、ポップアップの表示時にログイン画面が出てきます。
 
@@ -41,7 +41,7 @@
 を入力し、「START」を押してください。
 
 ### 検索
-![search](./usage-3.png)
+![search](./readme/3.png)
 
 送信画面、エラー画面、完了画面にて、検索ボックスにフォーカスをあてるか、<kbd>S</kbd>キーを押すと、検索画面へ移動します。
 
@@ -53,7 +53,7 @@
 この履歴は、ルームIDの保存期間が終了しても残ります。
 
 ### 送信画面
-![sending](./usage-4.png)
+![sending](./readme/4.png)
 
 検索画面や送信履歴をクリックした場合や、YouTubeの送信可能な動画上でポップアップを表示すると、この画面が表示されます。
 
