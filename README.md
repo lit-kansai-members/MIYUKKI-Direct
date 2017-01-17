@@ -22,7 +22,7 @@
 以下のいずれかの方法でインストールできます。
 
 - [chrome web store](https://chrome.google.com/webstore/detail/miyukki-direct/dlfogodhkanjnljickloiabigndaiema)からインストール (推奨)
-- GitHubの[Release](https://github.com/lit-kansai-members/MIYUKKI-Direct/releases)から`*.crx`ファイルをダウンロードし、[拡張機能設定](chrome://extensions)からにドラッグアンドドロップ
+- GitHubの[Release](https://github.com/lit-kansai-members/MIYUKKI-Direct/releases)から`*.crx`ファイルをダウンロードし、拡張機能設定(`chrome://extensions`)にドラッグアンドドロップ
 
 ## 使い方
 ブラウザ右上のツールバーにある「DJ」と書かれたアイコンをクリックするか、<kbd><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd></kbd>でポップアップが表示されます。
