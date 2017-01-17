@@ -25,8 +25,8 @@
         <option value="direct">dj.life-is-tech.com/submit.html?r=</option>
         <option value="">カスタム</option>
       </select>
-      <input type="text" class="match-parent" id="inputShortenURL"
-      autofocus placeholder="URLの続きまたはルームIDを入力…">
+      <input type="text" class="autofocus match-parent" id="inputShortenURL"
+      placeholder="URLの続きまたはルームIDを入力…">
     </p>
     <p>
     <input id="inputKeepPeriod" type="number" value="0" min="0" col="2">日間保存
@@ -59,7 +59,7 @@
   <form id="submit" action="">
     <input type="hidden" name="id">
     <input type="hidden" name="room_id">
-    <button class="match-parent">SUBMIT</button>
+    <button class="match-parent autofocus">SUBMIT</button>
   </form>
 </section>
 
@@ -76,7 +76,7 @@
 エラーが発生しました。:
 <p id="error-result"></p>
 <div class="stretch"></div>
-<button class="back match-parent">戻る</button>
+<button class="back match-parent autofocus">戻る</button>
 </section>
 
 <section id="success" class="flex-container flex-column">
@@ -87,7 +87,7 @@
     動画が再生されるまでお楽しみに！
   </p>
   <div class="stretch"></div>
-  <button class="back match-parent">戻る</button>
+  <button class="back match-parent autofocus">戻る</button>
 </section>
 
 <header>
