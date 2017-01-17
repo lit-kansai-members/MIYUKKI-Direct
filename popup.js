@@ -399,6 +399,8 @@ $id("tweet").addEventListener("click", e => {
   e.stopPropagation();
 });
 
+location.hash = "";
+
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
   .then(({roomId, keepPeriod}) =>{
     if(!roomId || !keepPeriod || new Date > keepPeriod) {
