@@ -392,7 +392,7 @@ $id("tweet").addEventListener("click", e => {
       encodeURIComponent("http://youtu.be/" + videoInfo.id)
     }&text=${
       encodeURIComponent(`DJ MIYUKKI SYSTEM に ${videoInfo.snippet.title}を投稿しました`)
-    }&hashtags=${encodeURIComponent(`#DJMIYUKKI_${$submitForm.room_id.value}`)}`,
+    }&hashtags=${encodeURIComponent(`DJMIYUKKI_${$submitForm.room_id.value},lifeistech`)}`,
     type: "popup"
   });
   e.preventDefault();
