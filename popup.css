@@ -236,9 +236,16 @@ header{
 }
 
 #search-result{
-  padding: 0;
+  padding: 4rem 0 0 0;
   margin: 0;
   font-size: .7em;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+}
+
+#history.hidden + #search-result{
+  padding: 0;
 }
 
 #search-result:after{
