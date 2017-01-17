@@ -78,7 +78,7 @@ button, select{
   cursor: pointer;
 }
 
-button:hover{
+button:hover, button:focus{
   background: #fff;
   color: #00A3ED;
 }
