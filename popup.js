@@ -245,8 +245,9 @@ $submitForm.addEventListener("submit", e => {
         { method: "POST", body: new FormData($submitForm)})
         .then(res => {
           if(res.ok){
+            const {id, snippet:{title, description, thumbnails:{medium:{url}}}} = videoInfo;
             chrome.storage.sync.get("history", ({history = []}) =>{
-              history.push(videoInfo);
+              history.push({id, snippet:{title, description, thumbnails:{medium:{url}}}});
               chrome.storage.sync.set({history, lastPost: (new Date).getTime()}, () =>
                 location.hash = "success" );
             });
