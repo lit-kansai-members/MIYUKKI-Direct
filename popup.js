@@ -237,18 +237,20 @@ $getShortenURL.addEventListener("submit", e => {
 
 $submitForm.addEventListener("submit", e => {
   location.hash = "";
-  chrome.storage.sync.get("lastPost", ({lastPost=0}) => {
-    if(new Date - lastPost < 1000 * 60 * 5){
+  chrome.storage.sync.get("postAllowed", ({postAllowed=0}) => {
+    if(new Date < postAllowed){
       error("一回投稿したら最低五分間は間を空けて投稿してください。");
     } else {
       fetch("https://dj.life-is-tech.com/api",
         { method: "POST", body: new FormData($submitForm)})
         .then(res => {
           if(res.ok){
+            const postAllowed = Date.now() + 1000 * 60 * 5;
             const {id, snippet:{title, description, thumbnails:{medium:{url}}}} = videoInfo;
+            chrome.alarms.create("postAllowed", {when: postAllowed});
             chrome.storage.sync.get("history", ({history = []}) =>{
               history.push({id, snippet:{title, description, thumbnails:{medium:{url}}}});
-              chrome.storage.sync.set({history, lastPost: (new Date).getTime()}, () =>
+              chrome.storage.sync.set({history, postAllowed}, () =>
                 location.hash = "success" );
             });
           } else {

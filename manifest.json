@@ -21,13 +21,19 @@
     "http://suggestqueries.google.com/complete/search*",
 		"storage",
 		"tabs",
-    "identity"
+    "identity",
+    "notifications",
+    "alarms",
+    "background"
 	],
   "oauth2": {
     "client_id": "16840359990-i1u8m4k9oomf90oephctr3mridp2pjph.apps.googleusercontent.com",
     "scopes": [
     "https://www.googleapis.com/auth/youtube.readonly"
     ]
+  },
+  "background":{
+    "scripts": ["background.js"]
   },
   "commands": {
     "_execute_browser_action": {
