@@ -131,7 +131,11 @@ const renderSearchResult = (videos, reset=true) =>{
 const search = isFirstFetch =>{
   const {value} = $inputSearchQuery
   let URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=20&q=${encodeURIComponent(value)}`;
-  if(isFirstFetch) nextPageToken = null;
+  if(isFirstFetch) {
+    nextPageToken = null;
+    $searchResult.innerHTML = "";
+    searchResults = [];
+  };
   if(!nextPageToken && lastFetchURL === URL){
     return;
   }
