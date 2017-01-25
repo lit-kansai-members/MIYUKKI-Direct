@@ -195,14 +195,27 @@ header{
   list-style: none;
 }
 
-#autocompletes li{
+#autocompletes:empty{
+  display: none;
+}
+
+#autocompletes:before{
+  font-size: .7em;
+  content: "select word with ↑↓ and Enter.";
+  box-sizing: border-box;
+}
+
+#autocompletes li,
+#autocompletes:before{
+  display: list-item;
   width: 100%;
   border: solid 1px;
   background: #000;
   padding: .5em;
 }
 
-#autocompletes li:not(:last-child) {
+#autocompletes li:not(:last-child),
+#autocompletes:before{
   border-bottom: none;
 }
 
