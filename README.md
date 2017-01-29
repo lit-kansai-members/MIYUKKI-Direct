@@ -1,5 +1,5 @@
 # MIYUKKI Direct
-シンプルかつ高機能な DJ MIYUKKI SYSTEM の 非公式 Google Chrome 拡張機能のクライアント。
+2クリックで DJ MIYUKKI SYSTEM に投稿できる Life is Tech ! 非公式 Google Chrome 拡張機能
 
 [![available in the chrome web store](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_v2_206x58.png)](https://chrome.google.com/webstore/detail/miyukki-direct/dlfogodhkanjnljickloiabigndaiema)
 
