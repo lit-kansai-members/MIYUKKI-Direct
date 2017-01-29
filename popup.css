@@ -294,8 +294,8 @@ header{
 }
 
 #history span{
-  line-height: 2.5;
   margin: 0 1em;
+  align-items: center;
 }
 
 #history.hidden{
