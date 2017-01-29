@@ -218,6 +218,7 @@ $getShortenURL.addEventListener("submit", e => {
     .then(() => baseURL === "direct" ? param : getRoomId(baseURL + param))
     .then( roomId => new Promise((resolve) => {
       const {value} = $inputKeepPeriod;
+      $getShortenURL.reset();
       let keepPeriod;
       if ( 0 >= value ){
         keepPeriod = "Infinity";
@@ -235,7 +236,6 @@ $getShortenURL.addEventListener("submit", e => {
     }))
     .then(()=> location.reload())
     .catch(reason => error(reason))
-    $getShortenURL.reset();
     e.preventDefault();
 });
 
