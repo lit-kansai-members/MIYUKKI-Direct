@@ -87,6 +87,40 @@ input[type="number"]{
   width: 3em;
 }
 
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  margin: 0 .5em;
+  background:  rgba(255, 255, 255, 0);
+  width: 2em;
+  height: 1em;
+  border: solid 1px #fff;
+  border-radius: 0.5em;
+  position: relative;
+  left: 0;
+  transition: 0.2s;
+}
+
+input[type="checkbox"]:before {
+  content: "";
+  width: 1em;
+  height: 1em;
+  background: #fff;
+  position: absolute;
+  border-radius: 0.5em;
+  top: 0;
+  left: 0;
+  transition: 0.2s;
+}
+
+input[type="checkbox"]:checked {
+  background: #44f;
+}
+
+input[type="checkbox"]:checked:before {
+  left: 1em;
+}
+
+
 :focus{
   outline: #44f solid 1px;
 }
@@ -159,6 +193,15 @@ ul{
 
 .margin-button{
   margin: 0 1em;
+}
+
+.button-transparent {
+  background: transparent !important;
+  border: none !important;
+}
+
+.hover-rotate:hover {
+  transform: rotate(30deg);
 }
 
 #logo{
@@ -291,11 +334,12 @@ header{
   position: absolute;
   width: 90%;
   margin: 1em 0;
+  z-index: 2;
 }
 
 #history span{
-  line-height: 2.5;
   margin: 0 1em;
+  align-self: center;
 }
 
 #history.hidden{
@@ -309,4 +353,8 @@ header{
 #tweet svg{
   height: 1em;
   width: 1em;
+}
+
+#tosetting svg{
+  height: 100%;
 }
