@@ -10,6 +10,8 @@ const $inputKeepPeriod = $id("inputKeepPeriod");
 
 const $showRoomId = $id("roomId");
 const $showKeepPeriod = $id("showKeepPeriod");
+const $postStatus = $id("postStatus");
+
 const $getShortenURL  = $id("getShortenURL");
 
 const $videoTitle = $id("videoTitle");
@@ -164,14 +166,14 @@ const setting = () => {
 const search = isFirstFetch =>{
   const {value} = $inputSearchQuery
   let URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=20&q=${encodeURIComponent(value)}`;
+  if(!nextPageToken && lastFetchURL === URL){
+    return;
+  }
   if(isFirstFetch) {
     nextPageToken = null;
     $searchResult.innerHTML = "";
     searchResults = [];
   };
-  if(!nextPageToken && lastFetchURL === URL){
-    return;
-  }
   const fetchId = ++lastFetch;
   let _token;
   lastFetchURL = URL;
@@ -286,7 +288,8 @@ $submitForm.addEventListener("submit", e => {
             const {id, snippet:{title, description, thumbnails:{medium:{url}}}} = videoInfo;
             chrome.alarms.create("postAllowed", {when: postAllowed});
             chrome.storage.sync.get("history", ({history = []}) =>{
-              history.push({id, snippet:{title, description, thumbnails:{medium:{url}}}});
+              history.push({id, snippet:{title, description: description.slice(0, 300)
+                , thumbnails:{medium:{url}}}});
               chrome.storage.sync.set({history, postAllowed}, () =>
                 location.hash = "success" );
             });
@@ -320,6 +323,9 @@ $inputSearchQuery.addEventListener("input", () =>{
       .then(res => res.ok && res.json())
       .then(([input, result]) => {
         if(input === $inputSearchQuery.value){
+          if(result[0] !== input){
+            result.unshift(input);
+          }
           const frag = document.createDocumentFragment();
           result.forEach(value =>{
             const element = document.createElement("li");
@@ -455,6 +461,21 @@ $setting.addEventListener("input", handleSettingFormChange);
 
 $id("tosetting").addEventListener("click", setting);
 
+setInterval(()=>
+  chrome.storage.sync.get("postAllowed", ({postAllowed=0}) => {
+    const secondLeft = (postAllowed - Date.now()) / 1000;
+    if(secondLeft <= 0) {
+      $postStatus.innerText = "";
+    } else {
+      if(secondLeft >= 60) {
+        $postStatus.innerText = `あと${Math.ceil(secondLeft / 60)}分で投稿できます`
+      } else {
+        $postStatus.innerText = `あと${Math.ceil(secondLeft)}秒で投稿できます`
+      }
+    }
+  })
+, 1000)
+
 location.hash = "";
 
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
@@ -465,7 +486,8 @@ location.hash = "";
     } else {
       $showRoomId.innerText = roomId;
       $submitForm.room_id.value = roomId;
-      $showKeepPeriod.innerText = Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1);
+      const time = Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1);
+      $showKeepPeriod.innerText = isFinite(time) ? time : "無期限";
       (new Promise((res, rej) => chrome.tabs.query({active:true, currentWindow: true}, t =>{
         const match = t[0].url.match(/youtube.com\/.*[?&]v=([-\w]+)/);
         if (match) {
