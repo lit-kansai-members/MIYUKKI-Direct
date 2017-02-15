@@ -195,6 +195,15 @@ ul{
   margin: 0 1em;
 }
 
+.button-transparent {
+  background: transparent !important;
+  border: none !important;
+}
+
+.hover-rotate:hover {
+  transform: rotate(30deg);
+}
+
 #logo{
   height: 3em;
 }
