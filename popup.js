@@ -441,6 +441,19 @@ $id("tweet").addEventListener("click", e => {
   e.stopPropagation();
 });
 
+const handleSettingFormChange = () =>
+  chrome.storage.sync.set({settings:
+    Object.entries($settings).reduce((before, [name, val]) =>{
+      before[name] = val.checked != null ? val.checked : val.value;
+      return before;
+    }, {})
+  });
+
+$setting.addEventListener("change", handleSettingFormChange);
+$setting.addEventListener("input", handleSettingFormChange);
+
+$id("tosetting").addEventListener("click", setting);
+
 location.hash = "";
 
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
