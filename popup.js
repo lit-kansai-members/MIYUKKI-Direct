@@ -28,6 +28,21 @@ const searchHeight = $search.offsetHeight;
 const $removeHistory = $id("removeHistory");
 const $history = $id("history");
 
+const $setting = $id("setting");
+const $settings = {
+  noticeAllowedPost: $id("setNoticeAllowedPost"),
+  suggestSearchInput: $id("setSuggestSearchInput")
+}
+
+const defaultSettings = {
+  noticeAllowedPost: true,
+  suggestSearchInput: true
+}
+
+const getSettings = cb =>
+  chrome.storage.sync.get("settings", ({settings}) =>
+    cb(Object.assign({}, defaultSettings, settings)));
+
 const error = e =>{
   console.error("something Error occured!", e)
   location.hash = "error"
