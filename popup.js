@@ -288,7 +288,8 @@ $submitForm.addEventListener("submit", e => {
             const {id, snippet:{title, description, thumbnails:{medium:{url}}}} = videoInfo;
             chrome.alarms.create("postAllowed", {when: postAllowed});
             chrome.storage.sync.get("history", ({history = []}) =>{
-              history.push({id, snippet:{title, description, thumbnails:{medium:{url}}}});
+              history.push({id, snippet:{title, description: description.slice(0, 300)
+                , thumbnails:{medium:{url}}}});
               chrome.storage.sync.set({history, postAllowed}, () =>
                 location.hash = "success" );
             });
