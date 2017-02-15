@@ -313,28 +313,30 @@ $inputSearchQuery.addEventListener("focus", () => {
 $inputSearchQuery.addEventListener("input", () =>{
   $autocompletes.innerHTML = "";
   completeList = [];
-  if($inputSearchQuery.value)
-    fetch("http://suggestqueries.google.com/complete/search?client=firefox&hl=ja&ds=yt&q="
-    + encodeURIComponent($inputSearchQuery.value))
-    .then(res => res.ok && res.json())
-    .then(([input, result]) => {
-      if(input === $inputSearchQuery.value){
-        const frag = document.createDocumentFragment();
-        result.forEach(value =>{
-          const element = document.createElement("li");
-          element.classList.add("elipsis");
-          element.innerText = value;
-          frag.appendChild(element);
-        })
-        $autocompletes.innerHTML = "";
-        completeList = [];
-        $autocompletes.appendChild(frag);
-        completeList = result.map((value, i) =>
-          ({value, element: $autocompletes.childNodes[i]}))
-        focused = 0;
-        if(completeList.length)
-          completeList[0].element.classList.add("focused");
-      }
+  getSettings(({suggestSearchInput}) => {
+    if($inputSearchQuery.value && suggestSearchInput)
+      fetch("http://suggestqueries.google.com/complete/search?client=firefox&hl=ja&ds=yt&q="
+      + encodeURIComponent($inputSearchQuery.value))
+      .then(res => res.ok && res.json())
+      .then(([input, result]) => {
+        if(input === $inputSearchQuery.value){
+          const frag = document.createDocumentFragment();
+          result.forEach(value =>{
+            const element = document.createElement("li");
+            element.classList.add("elipsis");
+            element.innerText = value;
+            frag.appendChild(element);
+          })
+          $autocompletes.innerHTML = "";
+          completeList = [];
+          $autocompletes.appendChild(frag);
+          completeList = result.map((value, i) =>
+            ({value, element: $autocompletes.childNodes[i]}))
+          focused = 0;
+          if(completeList.length)
+            completeList[0].element.classList.add("focused");
+        }
+      })
     })
   search(true);
 });
