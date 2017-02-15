@@ -353,3 +353,7 @@ header{
   height: 1em;
   width: 1em;
 }
+
+#tosetting svg{
+  height: 100%;
+}
