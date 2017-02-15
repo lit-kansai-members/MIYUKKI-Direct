@@ -323,6 +323,9 @@ $inputSearchQuery.addEventListener("input", () =>{
       .then(res => res.ok && res.json())
       .then(([input, result]) => {
         if(input === $inputSearchQuery.value){
+          if(result[0] !== input){
+            result.unshift(input);
+          }
           const frag = document.createDocumentFragment();
           result.forEach(value =>{
             const element = document.createElement("li");
