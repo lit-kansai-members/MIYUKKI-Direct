@@ -387,6 +387,7 @@ $inputSearchQuery.addEventListener("keydown", e => {
       $autocompletes.innerHTML = "";
       completeList = [];
       focused = 0;
+      search(true);
       return;
     } else {
       return;
