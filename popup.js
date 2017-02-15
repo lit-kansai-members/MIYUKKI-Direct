@@ -486,7 +486,8 @@ location.hash = "";
     } else {
       $showRoomId.innerText = roomId;
       $submitForm.room_id.value = roomId;
-      $showKeepPeriod.innerText = Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1);
+      const time = Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1);
+      $showKeepPeriod.innerText = isFinite(time) ? time : "無期限";
       (new Promise((res, rej) => chrome.tabs.query({active:true, currentWindow: true}, t =>{
         const match = t[0].url.match(/youtube.com\/.*[?&]v=([-\w]+)/);
         if (match) {
