@@ -21,9 +21,9 @@
     <div class="stretch"></div>
     <p>
       <select id="selectUrlType" class="match-parent">
-        <option value="http://lit.sh/" checked>lit.sh/</option>
-        <option value="direct">dj.life-is-tech.com/submit.html?r=</option>
-        <option value="">カスタム</option>
+        <option value="http://lit.sh/" checked>短縮URL: lit.sh/</option>
+        <option value="direct">ルームID: dj.life-is-tech.com/submit.html?r=</option>
+        <option value="">短縮URL: カスタム</option>
       </select>
       <input type="text" class="autofocus match-parent" id="inputShortenURL"
       placeholder="URLの続きまたはルームIDを入力…">
@@ -98,15 +98,29 @@
   <button class="back match-parent autofocus">戻る</button>
 </section>
 
+<section id="setting">
+<h3>
+  設定
+</h3>
+<p><label><input type="checkbox" id="setNoticeAllowedPost" class="autofocus">動画の投稿が可能になったことを通知</label></p>
+<p><label><input id="setSuggestSearchInput" type="checkbox">動画の検索時に入力候補を表示</label></p>
+</section>
+
 <header>
   <p class="flex-container">
     <img src="./logo.png" alt="DJ MIYUKKI SYSTEM" id="logo">
     <button id="logout" class="stretch margin-button">LOGOUT</button>
+    <button id="tosetting" class="button-transparent">
+      <svg viewBox="0 0 384 448" class="hover-rotate">
+        <path fill="#fff" d="M256 224c0-35.25-28.75-64-64-64s-64 28.75-64 64 28.75 64 64 64 64-28.75 64-64zM384 196.75v55.5c0 3.75-3 8.25-7 9l-46.25 7c-2.75 8-5.75 15.5-9.75 22.75 8.5 12.25 17.5 23.25 26.75 34.5 1.5 1.75 2.5 4 2.5 6.25s-0.75 4-2.25 5.75c-6 8-39.75 44.75-48.25 44.75-2.25 0-4.5-1-6.5-2.25l-34.5-27c-7.25 3.75-15 7-22.75 9.5-1.75 15.25-3.25 31.5-7.25 46.5-1 4-4.5 7-9 7h-55.5c-4.5 0-8.5-3.25-9-7.5l-7-46c-7.75-2.5-15.25-5.5-22.5-9.25l-35.25 26.75c-1.75 1.5-4 2.25-6.25 2.25s-4.5-1-6.25-2.75c-13.25-12-30.75-27.5-41.25-42-1.25-1.75-1.75-3.75-1.75-5.75 0-2.25 0.75-4 2-5.75 8.5-11.5 17.75-22.5 26.25-34.25-4.25-8-7.75-16.25-10.25-24.75l-45.75-6.75c-4.25-0.75-7.25-4.75-7.25-9v-55.5c0-3.75 3-8.25 6.75-9l46.5-7c2.5-8 5.75-15.5 9.75-23-8.5-12-17.5-23.25-26.75-34.5-1.5-1.75-2.5-3.75-2.5-6s1-4 2.25-5.75c6-8.25 39.75-44.75 48.25-44.75 2.25 0 4.5 1 6.5 2.5l34.5 26.75c7.25-3.75 15-7 22.75-9.5 1.75-15.25 3.25-31.5 7.25-46.5 1-4 4.5-7 9-7h55.5c4.5 0 8.5 3.25 9 7.5l7 46c7.75 2.5 15.25 5.5 22.5 9.25l35.5-26.75c1.5-1.5 3.75-2.25 6-2.25s4.5 1 6.25 2.5c13.25 12.25 30.75 27.75 41.25 42.5 1.25 1.5 1.75 3.5 1.75 5.5 0 2.25-0.75 4-2 5.75-8.5 11.5-17.75 22.5-26.25 34.25 4.25 8 7.75 16.25 10.25 24.5l45.75 7c4.25 0.75 7.25 4.75 7.25 9z"></path>
+      </svg>
+    </button>
   </p>
   <p>
     <small>
-      Logged in: <span id="roomId"></span>
-      to <span id="showKeepPeriod"></span> day(s).
+      ルームID: <span id="roomId"></span> あと <span id="showKeepPeriod"></span> 日有効 <br>
+      <span id="postStatus"></span>
+
     </small>
   </p>
   <input id="inputSearchQuery" type="search" placeholder="検索ワードを入力…" class="match-parent">
