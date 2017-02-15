@@ -10,6 +10,8 @@ const $inputKeepPeriod = $id("inputKeepPeriod");
 
 const $showRoomId = $id("roomId");
 const $showKeepPeriod = $id("showKeepPeriod");
+const $postStatus = $id("postStatus");
+
 const $getShortenURL  = $id("getShortenURL");
 
 const $videoTitle = $id("videoTitle");
@@ -454,6 +456,21 @@ $setting.addEventListener("change", handleSettingFormChange);
 $setting.addEventListener("input", handleSettingFormChange);
 
 $id("tosetting").addEventListener("click", setting);
+
+setInterval(()=>
+  chrome.storage.sync.get("postAllowed", ({postAllowed=0}) => {
+    const secondLeft = (postAllowed - Date.now()) / 1000;
+    if(secondLeft <= 0) {
+      $postStatus.innerText = "";
+    } else {
+      if(secondLeft >= 60) {
+        $postStatus.innerText = `あと${Math.ceil(secondLeft / 60)}分で投稿できます`
+      } else {
+        $postStatus.innerText = `あと${Math.ceil(secondLeft)}秒で投稿できます`
+      }
+    }
+  })
+, 1000)
 
 location.hash = "";
 
