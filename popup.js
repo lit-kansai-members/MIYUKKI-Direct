@@ -166,14 +166,14 @@ const setting = () => {
 const search = isFirstFetch =>{
   const {value} = $inputSearchQuery
   let URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=20&q=${encodeURIComponent(value)}`;
+  if(!nextPageToken && lastFetchURL === URL){
+    return;
+  }
   if(isFirstFetch) {
     nextPageToken = null;
     $searchResult.innerHTML = "";
     searchResults = [];
   };
-  if(!nextPageToken && lastFetchURL === URL){
-    return;
-  }
   const fetchId = ++lastFetch;
   let _token;
   lastFetchURL = URL;
