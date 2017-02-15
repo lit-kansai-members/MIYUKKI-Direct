@@ -143,6 +143,24 @@ const renderSearchResult = (videos, reset=true) =>{
   searchResults = searchResults.concat(videos);
 }
 
+const setting = () => {
+  if(location.hash !== "#setting"){
+    location.hash = "";
+    getSettings( settings => {
+      Object.entries(settings).forEach(([key, val]) =>{
+        if(typeof val === "boolean") {
+          $settings[key].checked = val;
+        } else {
+          $settings[key].value = val;
+        }
+      });
+      location.hash = "setting";
+    });
+  } else {
+    history.go(-2);
+  }
+}
+
 const search = isFirstFetch =>{
   const {value} = $inputSearchQuery
   let URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=20&q=${encodeURIComponent(value)}`;
