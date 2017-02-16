@@ -42,11 +42,11 @@ body {
 }
 
 body > section {
-  height: calc(100% - 12em);
+  height: calc(100% - 14em);
   position: fixed;
   padding: 5%;
   left: 100%;
-  top: 12em;
+  top: 14em;
   overflow: auto;
 }
 
@@ -202,6 +202,10 @@ ul{
 
 .hover-rotate:hover {
   transform: rotate(30deg);
+}
+
+.small {
+  font-size: .8em;
 }
 
 #logo{
