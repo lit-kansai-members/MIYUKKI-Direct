@@ -50,7 +50,7 @@
 <section id="post" class="flex-container flex-column">
   <iframe id="player" src="" frameborder="0"></iframe>
   <h2 id="videoTitle" class="ellipsis2"></h2>
-  <p id="videoDescription" class="ellipsis10"></p>
+  <p id="videoDescription" class="ellipsis8"></p>
   <div class="stretch"></div>
   <p>
     を送信します。
@@ -116,13 +116,14 @@
       </svg>
     </button>
   </p>
-  <p>
-    <small>
-      ルームID: <span id="roomId"></span> あと <span id="showKeepPeriod"></span> 日有効 <br>
-      <span id="postStatus"></span>
-
-    </small>
+  <p class="flex-container small">
+    <span class="stretch">
+      ルームID: <span id="roomId"></span>
+      あと <span id="showKeepPeriod"></span> 日有効
+    </span>
+    <span id="postStatus"></span>
   </p>
+  <p>Now Playing: <a id="nowPlaying"></a></p>
   <input id="inputSearchQuery" type="search" placeholder="検索ワードを入力…" class="match-parent">
   <div class="position-relative">
     <ul id="autocompletes"></ul>
