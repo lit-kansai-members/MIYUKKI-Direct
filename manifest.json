@@ -30,8 +30,10 @@
     "https://www.googleapis.com/auth/youtube.readonly"
     ]
   },
+  "content_security_policy":"script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'",
   "background":{
-    "scripts": ["background.js"]
+    "page": "background.html",
+    "persistent": true
   },
   "commands": {
     "_execute_browser_action": {
