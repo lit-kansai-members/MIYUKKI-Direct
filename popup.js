@@ -11,6 +11,7 @@ const $inputKeepPeriod = $id("inputKeepPeriod");
 const $showRoomId = $id("roomId");
 const $showKeepPeriod = $id("showKeepPeriod");
 const $postStatus = $id("postStatus");
+const $nowPlaying = $id("nowPlaying");
 
 const $getShortenURL  = $id("getShortenURL");
 
@@ -269,7 +270,10 @@ $getShortenURL.addEventListener("submit", e => {
       chrome.storage.sync.set({roomId, keepPeriod},
         () => resolve());
     }))
-    .then(()=> location.reload())
+    .then(()=> {
+        chrome.runtime.sendMessage({type: "loggedIn", data});
+      location.reload();
+    })
     .catch(reason => error(reason))
     e.preventDefault();
 });
@@ -476,6 +480,13 @@ setInterval(()=>
   })
 , 1000)
 
+
+chrome.runtime.onMessage.addListener(({type, data}) => {
+  if(type === "playingChanged"){
+    $nowPlaying.innerText = data || "再生されていません"; // TODO: set message from video data.
+  }
+});
+
 location.hash = "";
 
 (new Promise(res => chrome.storage.sync.get(["roomId", "keepPeriod"], v => res(v))))
@@ -484,6 +495,7 @@ location.hash = "";
       location.hash = "init";
       $("header *:not(p):not(#logo)").forEach(e => e.style.display = "none")
     } else {
+      chrome.runtime.sendMessage({type: "openPopup"});
       $showRoomId.innerText = roomId;
       $submitForm.room_id.value = roomId;
       const time = Math.floor((keepPeriod - new Date) / (1000 * 60 * 60 * 24) + 1);
