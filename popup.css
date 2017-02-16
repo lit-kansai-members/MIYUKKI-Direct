@@ -155,7 +155,7 @@ ul{
   flex-wrap: nowrap;
 }
 
-.ellipsis, .ellipsis2, .ellipsis10{
+.ellipsis, .ellipsis2, .ellipsis8{
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -170,8 +170,8 @@ ul{
   -webkit-line-clamp: 2;
 }
 
-.ellipsis10{
-  -webkit-line-clamp: 10;
+.ellipsis8{
+  -webkit-line-clamp: 8;
 }
 
 .stretch{
