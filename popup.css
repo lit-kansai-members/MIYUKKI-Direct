@@ -200,8 +200,12 @@ ul{
   border: none !important;
 }
 
+.hover-rotate {
+  transition: .3s;
+}
+
 .hover-rotate:hover {
-  transform: rotate(30deg);
+  transform: rotate(90deg);
 }
 
 #logo{
