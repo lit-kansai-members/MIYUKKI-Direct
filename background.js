@@ -25,13 +25,15 @@ const handleLoggedIn = () =>
         data = snapshot.val();
         chrome.runtime.sendMessage({type: "playingChanged", data});
 
-        if(data != null)
+      chrome.storage.sync.get("settings", ({settings:{noticeNowPlaying}}) =>{
+        if (data != null && (noticeNowPlaying || noticeNowPlaying == null))
           chrome.notifications.create("nowPlaying",{
             type:"basic",
             iconUrl:"./icons/128.png",
             title:"Now Playing | MIYUKKI Direct",
             message: data
           }); // TODO: set message from video data.
+        });
       });
     }
   });
