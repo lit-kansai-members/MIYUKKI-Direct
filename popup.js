@@ -273,7 +273,7 @@ $getShortenURL.addEventListener("submit", e => {
         () => resolve());
     }))
     .then(()=> {
-        chrome.runtime.sendMessage({type: "loggedIn", data});
+        chrome.runtime.sendMessage({type: "loggedIn"});
       location.reload();
     })
     .catch(reason => error(reason))
