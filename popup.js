@@ -34,12 +34,14 @@ const $history = $id("history");
 const $setting = $id("setting");
 const $settings = {
   noticeAllowedPost: $id("setNoticeAllowedPost"),
-  suggestSearchInput: $id("setSuggestSearchInput")
+  suggestSearchInput: $id("setSuggestSearchInput"),
+  noticeNowPlaying: $id("setNoticeNowPlaying")
 }
 
 const defaultSettings = {
   noticeAllowedPost: true,
-  suggestSearchInput: true
+  suggestSearchInput: true,
+  noticeNowPlaying: true
 }
 
 const getSettings = cb =>
